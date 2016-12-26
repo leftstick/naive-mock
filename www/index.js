@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
+import extensions from './ext';
 import VueRouter from 'vue-router';
 import store from './store';
 import mock from './mock';
@@ -18,13 +19,17 @@ class App {
         Vue.config.devtools = process.env.NODE_ENV !== 'production';
     }
 
+    registerExts() {
+        this.plugins = extensions();
+    }
+
     createVueOpts() {
-        this.vueOps = {
+        this.vueOps = Object.assign({}, {
             components: {
                 mock
             },
             store: store()
-        };
+        }, this.plugins);
     }
 
     setDefaultPath() {
@@ -74,6 +79,7 @@ class App {
     }
 
     run() {
+        this.registerExts();
         this.createVueOpts();
         this.setDefaultPath();
         this.registerRouters();

@@ -12,7 +12,7 @@ module.exports = function(app) {
 
     app.use(express.static(assetsPath));
 
-    app.get(/^(?!\/api\/).+/, function response(req, res) {
+    app.get(/^(?!\/internal-used\/).+/, function response(req, res) {
         res.sendFile(resolve(assetsPath, 'index.html'));
     });
 };

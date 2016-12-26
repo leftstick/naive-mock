@@ -1,0 +1,103 @@
+import axios from 'axios';
+
+import {UPDATE_APIS_QUERY, UPDATE_APIS_OPERATING, UPDATE_API_LIST} from '../../mutations';
+
+export function updateAPIsQuery({commit, state}, payload) {
+    commit(UPDATE_APIS_QUERY.name, payload);
+}
+
+export function resetAPIsQuery({commit, state}, payload) {
+    commit(UPDATE_APIS_QUERY.name, {
+        api: '',
+        category: '',
+        status: ''
+    });
+}
+
+export function getAPI({commit, state}, id) {
+    commit(UPDATE_APIS_OPERATING.name, true);
+
+    return axios
+        .get(`/internal-used/api/${id}`)
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            throw err;
+        });
+}
+
+
+export function fetchAPIs({commit, state}) {
+    commit(UPDATE_APIS_OPERATING.name, true);
+
+    return axios
+        .get('/internal-used/apis')
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_API_LIST.name, response.data.data);
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            throw err;
+        });
+}
+
+export function createAPI({commit, state}, api) {
+    commit(UPDATE_APIS_OPERATING.name, true);
+
+    try {
+        valideAPI(api);
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+    return axios
+        .post('/internal-used/api', api)
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_API_LIST.name, [response.data.data, ...state.apis.data.list]);
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            throw err;
+        });
+}
+
+export function updateAPI({commit, state}, api) {
+    commit(UPDATE_APIS_OPERATING.name, true);
+
+    try {
+        if (!api.id) {
+            throw new Error('id cannot be empty');
+        }
+        valideAPI(api);
+    } catch (error) {
+        return Promise.reject(error);
+    }
+
+    return axios
+        .put(`/internal-used/api/${api.id}`, api)
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_API_LIST.name, [response.data.data, ...state.apis.data.list.filter(a => a.id !== api.id)]);
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            throw err;
+        });
+}
+
+
+function valideAPI(api) {
+    if (!api.api) {
+        throw new Error('api cannot be empty');
+    }
+    if (!api.category) {
+        throw new Error('category cannot be empty');
+    }
+    if (!api.status) {
+        throw new Error('status cannot be empty');
+    }
+}

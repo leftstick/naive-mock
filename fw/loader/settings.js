@@ -24,7 +24,7 @@ class SettingsLoader {
 
     save() {
         return new Promise((resolve, reject) => {
-            writeFile(settingsFile, JSON.stringify(this.data), (err) => {
+            writeFile(settingsFile, JSON.stringify(this.data, null, 4), err => {
                 if (err) {
                     return reject(err);
                 }

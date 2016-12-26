@@ -1,6 +1,11 @@
 {
   "name": "naive-mock",
   "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leftstick/naive-mock.git"
+  },
   "scripts": {
     "start": "node app.js",
     "predist": "rm -rf public/assets",
@@ -16,8 +21,8 @@
     "express": "^4.14.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.17.1",
-    "morgan": "^1.7.0",
-    "vue": "^2.1.6",
+    "uuid": "^3.0.1",
+    "vue": "^2.1.7",
     "vue-router": "^2.1.1",
     "vuex": "^2.1.1",
     "winston": "^2.3.0"
@@ -42,7 +47,7 @@
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^10.0.2",
     "vue-style-loader": "^1.0.0",
-    "vue-template-compiler": "^2.1.6",
+    "vue-template-compiler": "^2.1.7",
     "webpack": "^1.14.0",
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.14.0"

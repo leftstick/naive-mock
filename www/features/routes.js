@@ -1,5 +1,5 @@
-import about from './about/route';
 import apis from './apis/route';
+import help from './help/route';
 import settings from './settings/route';
 
-export default [...about, ...apis, ...settings];
+export default [...apis, ...help, ...settings];
