@@ -1,5 +1,7 @@
 <template>
-    <api-form @save="save" @back="back" type="Modify" :info="apiInfo" v-if="apiInfo"></api-form>
+    <div>
+        <api-form @save="save" @back="back" type="Modify" :info="apiInfo" v-if="apiInfo"></api-form>
+    </div>
 </template>
 
 <script>

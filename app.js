@@ -12,8 +12,8 @@ co(function*() {
 
     yield app.dataReady();
 
-    app.config(apis);
     app.config(route);
+    app.config(apis);
 
     yield app.launch();
 

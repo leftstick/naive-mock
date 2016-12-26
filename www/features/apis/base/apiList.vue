@@ -1,5 +1,5 @@
 <template>
-    <el-table :data="apisList" height="650" border style="width: 100%">
+    <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi">
         <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
         <el-table-column prop="category" label="Category" sortable width="150"></el-table-column>
         <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
@@ -22,6 +22,11 @@ export default {
         ])
     },
     methods: {
+        clickApi(row, column, cell, event) {
+            if (column.property === 'api') {
+                window.open(row.api);
+            }
+        },
         handleEdit(index, row) {
             this.$router.push({
                 path: `/apimanager/edit/${row.id}`

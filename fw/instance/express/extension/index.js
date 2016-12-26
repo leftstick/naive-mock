@@ -1,8 +1,10 @@
 const addLaunch = require('./launch');
-const addResponseApi = require('./responseSendApi');
+const addRequest = require('./requestMock');
+const addResponse = require('./responseSend');
 
 module.exports = function(app) {
     addLaunch(app);
-    addResponseApi(app);
+    addRequest(app);
+    addResponse(app);
     return app;
 };

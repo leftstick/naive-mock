@@ -54,7 +54,7 @@ class App {
 
     registerRouters() {
         this.router = new VueRouter({
-            mode: 'history',
+            mode: 'hash',
             routes: this.routes,
             scrollBehavior(to, from, savedPosition) {
                 if (savedPosition) {
