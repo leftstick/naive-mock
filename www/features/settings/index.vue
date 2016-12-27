@@ -1,8 +1,8 @@
 <template>
-    <div class="settings">
-        <el-form ref="form" :model="settings" label-width="140px">
+    <div class="settings" v-loading="settingsOperating">
+        <el-form ref="form" :model="info" label-width="140px" v-if="info">
             <el-form-item label="Fallback Domain">
-                <el-input v-model="settings.fallback"></el-input>
+                <el-input v-model="info.fallback"></el-input>
             </el-form-item>
             <el-form-item class="submit">
                 <el-button type="primary" @click="onSubmit">Save</el-button>
@@ -13,21 +13,53 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
+
+import {eraseGetter} from 'fw/util/Object';
 
 export default {
     data() {
         return {
-            settings: {}
+            info: null
         };
+    },
+    computed: {
+        ...mapGetters([
+            'settings',
+            'settingsOperating'
+        ])
     },
     methods: {
         ...mapActions([
-            'fetchSettings'
+            'fetchSettings',
+            'updateSettings'
         ]),
-        onSubmit() {},
-
-        onReset() {}
+        onSubmit() {
+            this
+                .updateSettings(eraseGetter(this.info))
+                .then(item => {
+                    this.info = eraseGetter(item);
+                    this.$message({
+                        message: 'Settings updated',
+                        type: 'success'
+                    });
+                })
+                .catch(this._onerror);
+        },
+        onReset() {
+            this.info = eraseGetter(this.settings);
+        },
+        _onerror(err) {
+            this.$message.error(err.message);
+        }
+    },
+    mounted() {
+        this
+            .fetchSettings()
+            .then(item => {
+                this.info = eraseGetter(item);
+            })
+            .catch(this._onerror);
     }
 };
 

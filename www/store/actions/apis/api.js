@@ -109,6 +109,9 @@ function valideAPI(api) {
     if (!api.api) {
         throw new Error('api cannot be empty');
     }
+    if (!api.api.startsWith('/')) {
+        throw new Error('api must starts with /');
+    }
     if (!api.category) {
         throw new Error('category cannot be empty');
     }

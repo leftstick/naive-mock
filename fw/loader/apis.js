@@ -1,10 +1,11 @@
-const {readFile, writeFile, readdirSync, statSync, unlink} = require('fs');
+const {readFile, writeFile, unlink} = require('fs');
 const {resolve, basename} = require('path');
 const mkdirp = require('mkdirp');
 
 const {dataDir} = require('../config');
 const DuplicatedError = require('../error/DuplicatedError');
 const Model = require('./APIModel');
+const {dirExist, readFilePaths} = require('../util/File');
 
 const DATA_FOLDERS = [resolve(__dirname, '..', '..', 'example-data'), dataDir];
 
@@ -50,7 +51,7 @@ class APIsLoader {
         }
         return new Promise((onSuccess, reject) => {
 
-            if (!fileExist(dataDir)) {
+            if (!dirExist(dataDir)) {
                 mkdirp.sync(dataDir);
             }
 
@@ -110,22 +111,3 @@ class APIsLoader {
 }
 
 module.exports = new APIsLoader();
-
-
-function readFilePaths(dir) {
-    try {
-        return readdirSync(dir).map(file => resolve(dir, file));
-    } catch (error) {
-        return [];
-    }
-}
-
-
-function fileExist(...filePaths) {
-    try {
-        const stat = statSync(resolve(...filePaths));
-        return stat.isFile();
-    } catch (error) {
-        return false;
-    }
-}

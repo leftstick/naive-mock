@@ -28,14 +28,15 @@ export default {
                         path: '/apimanager'
                     });
                 })
-                .catch(err => {
-                    this.$message.error(err.message);
-                });
+                .catch(this._onerror);
         },
         back() {
             this.$router.push({
                 path: '/apimanager'
             });
+        },
+        _onerror(err) {
+            this.$message.error(err.message);
         }
     },
     mounted() {
@@ -44,7 +45,8 @@ export default {
             .then((item) => {
                 this.apiInfo = item;
                 this.apiInfo.response = JSON.stringify(item.response, null, 4);
-            });
+            })
+            .catch(this._onerror);
     },
     components: {
         apiForm

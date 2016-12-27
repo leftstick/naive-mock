@@ -1,5 +1,9 @@
 const {readFile, writeFile} = require('fs');
+const {dirname} = require('path');
+const mkdirp = require('mkdirp');
 const {settingsFile} = require('../config');
+
+const {dirExist} = require('../util/File');
 
 class SettingsLoader {
     constructor() {
@@ -24,6 +28,10 @@ class SettingsLoader {
 
     save() {
         return new Promise((resolve, reject) => {
+            const folder = dirname(settingsFile);
+            if (!dirExist(folder)) {
+                mkdirp.sync(folder);
+            }
             writeFile(settingsFile, JSON.stringify(this.data, null, 4), err => {
                 if (err) {
                     return reject(err);

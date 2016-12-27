@@ -20,14 +20,15 @@ export default {
                         path: '/apimanager'
                     });
                 })
-                .catch(err => {
-                    this.$message.error(err.message);
-                });
+                .catch(this._onerror);
         },
         back() {
             this.$router.push({
                 path: '/apimanager'
             });
+        },
+        _onerror(err) {
+            this.$message.error(err.message);
         }
     },
     components: {

@@ -1,5 +1,7 @@
 
 export const settings = {
-    websiteUrl: '',
-    appUrl: ''
+    data: {
+        fallback: ''
+    },
+    operating: false
 };
