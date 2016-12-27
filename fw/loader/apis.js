@@ -1,4 +1,4 @@
-const {readFile, writeFile, readdirSync, statSync} = require('fs');
+const {readFile, writeFile, readdirSync, statSync, unlink} = require('fs');
 const {resolve, basename} = require('path');
 const mkdirp = require('mkdirp');
 
@@ -65,6 +65,18 @@ class APIsLoader {
                 }
                 this.setCategory(model.category);
                 this.setStatus(model.status);
+                onSuccess(model);
+            });
+        });
+    }
+
+    deleteAPI(model) {
+        return new Promise((onSuccess, reject) => {
+            unlink(resolve(dataDir, model.toFilepath()), err => {
+                if (err) {
+                    return reject(err);
+                }
+                this.data = this.data.filter(d => d.id !== model.id);
                 onSuccess(model);
             });
         });

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
+import CodeMirror from 'vue-codemirror';
 import extensions from './ext';
 import VueRouter from 'vue-router';
 import store from './store';
@@ -16,6 +17,7 @@ class App {
         Vue.use(ElementUI, {
             locale
         });
+        Vue.use(CodeMirror);
         Vue.config.devtools = process.env.NODE_ENV !== 'production';
     }
 

@@ -28,6 +28,21 @@ export function getAPI({commit, state}, id) {
         });
 }
 
+export function deleteAPI({commit, state}, id) {
+    commit(UPDATE_APIS_OPERATING.name, true);
+
+    return axios
+        .delete(`/internal-used/api/${id}`)
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_API_LIST.name, state.apis.data.list.filter(a => a.id !== id));
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.name, false);
+            throw err;
+        });
+}
+
 
 export function fetchAPIs({commit, state}) {
     commit(UPDATE_APIS_OPERATING.name, true);
@@ -99,5 +114,14 @@ function valideAPI(api) {
     }
     if (!api.status) {
         throw new Error('status cannot be empty');
+    }
+    if (!api.response) {
+        throw new Error('response cannot be empty');
+    }
+    try {
+        api.response = api.response.replace(/\n/g, '').replace(/\t/g, '');
+        api.response = JSON.parse(api.response);
+    } catch (error) {
+        throw new Error('response is not a valid JSON');
     }
 }

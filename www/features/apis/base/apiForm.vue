@@ -11,6 +11,7 @@
             <el-form-item label="Status" class="status">
                 <statuses @change="set('status', arguments[0])" :pre="api.status"></statuses>
             </el-form-item>
+            <codemirror :code="api.response" :options="editorOpts" @changed="set('response', arguments[0])"></codemirror>
             <el-form-item style="margin-top: 35px;">
                 <el-button type="primary" @click="save">{{ type }}</el-button>
                 <el-button @click="back">Back</el-button>
@@ -28,7 +29,20 @@ import statuses from './statuses';
 export default {
     data() {
         return {
-            api: this.type === 'Create' ? {api: '', category: '', status: '200'} : eraseGetter(this.info)
+            api: this.type === 'Create' ? {api: '', category: '', status: '200', response: ''} : eraseGetter(this.info),
+            editorOpts: {
+                tabSize: 4,
+                mode: {
+                    name: 'javascript',
+                    json: true
+                },
+                theme: 'base16-light',
+                lineNumbers: true,
+                line: true,
+                keyMap: 'sublime',
+                foldGutter: true,
+                styleSelectedText: true
+            }
         };
     },
     props: {
@@ -67,8 +81,13 @@ export default {
         text-align: center;
 
         .el-form {
-            width: 400px;
+            width: 800px;
             margin: 20px auto 10px auto;
+            text-align: left;
+
+            .api {
+                width: 400px;
+            }
         }
     }
 </style>

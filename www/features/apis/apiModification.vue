@@ -43,6 +43,7 @@ export default {
             .getAPI(this.$route.params.id)
             .then((item) => {
                 this.apiInfo = item;
+                this.apiInfo.response = JSON.stringify(item.response, null, 4);
             });
     },
     components: {

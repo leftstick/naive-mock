@@ -21,6 +21,22 @@ module.exports.get = function*(req, res, next) {
         .sendApi(api);
 };
 
+module.exports.delete = function*(req, res, next) {
+    if (!req.params.id) {
+        throw new InvalidParamsError('id must not be empty');
+    }
+    const api = apis.getAPIs().find(a => a.id === req.params.id);
+
+    if (!api) {
+        throw new NotExistError(`Specified id [${req.params.id}] doesn't exist`);
+    }
+
+    const result = yield apis.deleteAPI(api);
+
+    res
+        .sendApi(result);
+};
+
 module.exports.post = function*(req, res, next) {
     const model = new Model(Object.assign({
         id: uuidV1()

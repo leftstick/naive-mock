@@ -11,12 +11,16 @@ module.exports.get = function*(req, res, next) {
     const models = apis.getAPIs().filter(a => a.api === url);
     const opts = settings.get();
 
-    if (!models.length) {
+    if (!models.length) { //no api defined, fallback
         return fallback(req, res, opts);
     }
     const category = req.category();
 
-    if (category && models.every(m => m.category !== category)) {
+    if (!category) { //no category specified, fallback
+        return fallback(req, res, opts);
+    }
+
+    if (category && models.every(m => m.category !== category)) { //no api defined for specific category, fallback
         return fallback(req, res, opts);
     }
 
