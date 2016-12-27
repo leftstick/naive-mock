@@ -8,6 +8,9 @@
                 <el-form-item label="Category" class="category">
                     <categories @change="set('category', arguments[0])" :pre="apisQuery.category"></categories>
                 </el-form-item>
+                 <el-form-item label="Method" class="method">
+                    <methods @change="set('method', arguments[0])" :pre="apisQuery.method"></methods>
+                </el-form-item>
                 <el-form-item label="Status" class="status">
                     <statuses @change="set('status', arguments[0])" :pre="apisQuery.status"></statuses>
                 </el-form-item>
@@ -37,6 +40,7 @@
 import {mapGetters, mapActions} from 'vuex';
 import categories from './base/categories';
 import statuses from './base/statuses';
+import methods from './base/methods';
 import apiList from './base/apiList';
 
 export default {
@@ -64,6 +68,7 @@ export default {
     components: {
         categories,
         statuses,
+        methods,
         apiList
     }
 };

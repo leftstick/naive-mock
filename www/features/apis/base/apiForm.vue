@@ -8,6 +8,9 @@
             <el-form-item label="Category" class="category">
                 <categories @change="set('category', arguments[0])" :pre="api.category" disable-item="example"></categories>
             </el-form-item>
+            <el-form-item label="Method" class="method">
+                <methods @change="set('method', arguments[0])" :pre="api.method"></methods>
+            </el-form-item>
             <el-form-item label="Status" class="status">
                 <statuses @change="set('status', arguments[0])" :pre="api.status"></statuses>
             </el-form-item>
@@ -25,6 +28,7 @@ import {eraseGetter} from 'fw/util/Object';
 
 import categories from './categories';
 import statuses from './statuses';
+import methods from './methods';
 
 export default {
     data() {
@@ -32,6 +36,8 @@ export default {
             api: this.type === 'Create' ? {api: '', category: '', status: '200', response: ''} : eraseGetter(this.info),
             editorOpts: {
                 tabSize: 4,
+                indentWithTabs: true,
+                indentUnit: 4,
                 mode: {
                     name: 'javascript',
                     json: true
@@ -68,7 +74,8 @@ export default {
     },
     components: {
         categories,
-        statuses
+        statuses,
+        methods
     }
 };
 

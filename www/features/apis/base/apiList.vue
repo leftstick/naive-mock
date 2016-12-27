@@ -3,6 +3,7 @@
         <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi">
             <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
             <el-table-column prop="category" label="Category" sortable width="150"></el-table-column>
+            <el-table-column prop="method" label="Method" sortable width="100"></el-table-column>
             <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
             <el-table-column :context="_self" inline-template label="Oper" width="90">
                 <div>
@@ -42,7 +43,7 @@ export default {
         ]),
         clickApi(row, column, cell, event) {
             if (column.property === 'api') {
-                this.tryCmd = `curl -H "category:${row.category}" ${window.location.origin}${row.api}`;
+                this.tryCmd = `curl -X ${row.method} -H "category:${row.category}" ${window.location.origin}${row.api}`;
                 this.$refs.verify.open();
             }
         },

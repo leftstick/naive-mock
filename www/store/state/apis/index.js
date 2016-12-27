@@ -2,6 +2,7 @@
 export const apis = {
     query: {
         api: '',
+        method: '',
         category: '',
         status: ''
     },

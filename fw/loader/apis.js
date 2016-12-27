@@ -7,6 +7,8 @@ const DuplicatedError = require('../error/DuplicatedError');
 const Model = require('./APIModel');
 const {dirExist, readFilePaths} = require('../util/File');
 
+const {API_VERBS} = require('../util/Constant');
+
 const DATA_FOLDERS = [resolve(__dirname, '..', '..', 'example-data'), dataDir];
 
 class APIsLoader {
@@ -93,6 +95,10 @@ class APIsLoader {
 
     getStatuses() {
         return this.statuses;
+    }
+
+    getMethods() {
+        return API_VERBS.map(v => v.toUpperCase());
     }
 
     setCategory(category) {

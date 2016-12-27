@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import {UPDATE_APIS_QUERY, UPDATE_APIS_OPERATING, UPDATE_API_LIST} from '../../mutations';
 
+import {pickNotEmpty} from 'fw/util/Object';
+
 export function updateAPIsQuery({commit, state}, payload) {
     commit(UPDATE_APIS_QUERY.name, payload);
 }
@@ -48,7 +50,9 @@ export function fetchAPIs({commit, state}) {
     commit(UPDATE_APIS_OPERATING.name, true);
 
     return axios
-        .get('/internal-used/apis')
+        .get('/internal-used/apis', {
+            params: pickNotEmpty(state.apis.query)
+        })
         .then(response => {
             commit(UPDATE_APIS_OPERATING.name, false);
             commit(UPDATE_API_LIST.name, response.data.data);
@@ -60,13 +64,13 @@ export function fetchAPIs({commit, state}) {
 }
 
 export function createAPI({commit, state}, api) {
-    commit(UPDATE_APIS_OPERATING.name, true);
-
     try {
         valideAPI(api);
     } catch (error) {
         return Promise.reject(error);
     }
+
+    commit(UPDATE_APIS_OPERATING.name, true);
 
     return axios
         .post('/internal-used/api', api)
@@ -81,8 +85,6 @@ export function createAPI({commit, state}, api) {
 }
 
 export function updateAPI({commit, state}, api) {
-    commit(UPDATE_APIS_OPERATING.name, true);
-
     try {
         if (!api.id) {
             throw new Error('id cannot be empty');
@@ -91,6 +93,8 @@ export function updateAPI({commit, state}, api) {
     } catch (error) {
         return Promise.reject(error);
     }
+
+    commit(UPDATE_APIS_OPERATING.name, true);
 
     return axios
         .put(`/internal-used/api/${api.id}`, api)
@@ -114,6 +118,9 @@ function valideAPI(api) {
     }
     if (!api.category) {
         throw new Error('category cannot be empty');
+    }
+    if (!api.method) {
+        throw new Error('method cannot be empty');
     }
     if (!api.status) {
         throw new Error('status cannot be empty');

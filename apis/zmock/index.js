@@ -7,8 +7,28 @@ const settings = require('../../fw/loader/settings');
 module.exports.api = '*';
 
 module.exports.get = function*(req, res, next) {
+    search(req, res, 'GET');
+};
+
+module.exports.post = function*(req, res, next) {
+    search(req, res, 'POST');
+};
+
+module.exports.put = function*(req, res, next) {
+    search(req, res, 'PUT');
+};
+
+module.exports.patch = function*(req, res, next) {
+    search(req, res, 'PATCH');
+};
+
+module.exports.delete = function*(req, res, next) {
+    search(req, res, 'DELETE');
+};
+
+function search(req, res, method) {
     const url = req.url;
-    const models = apis.getAPIs().filter(a => a.api === url);
+    const models = apis.getAPIs().filter(a => a.api === url && a.method === method);
     const opts = settings.get();
 
     if (!models.length) { //no api defined, fallback
@@ -23,10 +43,9 @@ module.exports.get = function*(req, res, next) {
     if (category && models.every(m => m.category !== category)) { //no api defined for specific category, fallback
         return fallback(req, res, opts);
     }
-
     const model = models[0];
     res.set(model.headers).sendMock(model.response);
-};
+}
 
 function fallback(req, res, opts) {
     if (!opts.fallback) {

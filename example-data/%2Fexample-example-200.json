@@ -1,5 +1,6 @@
 {
     "api": "/example",
+    "method": "GET",
     "status": "200",
     "category": "example",
     "headers": {},
