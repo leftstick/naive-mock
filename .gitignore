@@ -16,3 +16,6 @@ public
 
 #settings
 settings.json
+
+#nohup.out
+nohup.out
