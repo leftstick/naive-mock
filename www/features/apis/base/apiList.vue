@@ -12,7 +12,7 @@
                 </div>
             </el-table-column>
         </el-table>
-        <el-dialog ref="verify" title="Verify" size="tiny">
+        <el-dialog ref="verify" title="Verify">
             <strong>Try with :</strong>
             <br/><br/>
             <code>{{ tryCmd }}</code>
