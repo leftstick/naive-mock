@@ -4,7 +4,7 @@ const {omit} = require('../../fw/util/Object');
 const apis = require('../../fw/loader/apis');
 const settings = require('../../fw/loader/settings');
 
-module.exports.api = '*';
+module.exports.api = /^\/n\//;
 
 module.exports.get = function*(req, res, next) {
     search(req, res, 'GET');
@@ -27,7 +27,7 @@ module.exports.delete = function*(req, res, next) {
 };
 
 function search(req, res, method) {
-    const url = req.url;
+    const url = req.url.replace(/^\/n/, '');
     const models = apis.getAPIs().filter(a => a.api === url && a.method === method);
 
     if (!models.length) { //no api defined, fallback
@@ -57,5 +57,11 @@ function fallback(req, res, method) {
         uri: `${opts.fallback}${req.url}`,
         headers: omit(req.headers, ['category'])
     })
+        .on('error', function(err) {
+            return res.sendError(404, {
+                name: 'Fallback Error',
+                message: 'fallback server is unavailable now'
+            });
+        })
         .pipe(res);
 }

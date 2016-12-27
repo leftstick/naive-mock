@@ -23,7 +23,7 @@ module.exports = function(app) {
 
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
-    app.get('/', function response(req, res) {
+    app.get(/^(?!(\/internal-used\/|\/n\/)).+/, function response(req, res) {
         res.write(middleware.fileSystem.readFileSync(assetPath));
         res.end();
     });
