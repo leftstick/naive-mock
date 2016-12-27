@@ -29,32 +29,33 @@ module.exports.delete = function*(req, res, next) {
 function search(req, res, method) {
     const url = req.url;
     const models = apis.getAPIs().filter(a => a.api === url && a.method === method);
-    const opts = settings.get();
 
     if (!models.length) { //no api defined, fallback
-        return fallback(req, res, opts);
+        return fallback(req, res, method);
     }
     const category = req.category();
 
     if (!category) { //no category specified, fallback
-        return fallback(req, res, opts);
+        return fallback(req, res, method);
     }
 
     if (category && models.every(m => m.category !== category)) { //no api defined for specific category, fallback
-        return fallback(req, res, opts);
+        return fallback(req, res, method);
     }
     const model = models[0];
     res.set(model.headers).sendMock(model.response);
 }
 
-function fallback(req, res, opts) {
+function fallback(req, res, method) {
+    const opts = settings.get();
+
     if (!opts.fallback) {
         return res.status(404).end();
     }
-    return request
-        .get({
-            uri: `${opts.fallback}${req.url}`,
-            headers: omit(req.headers, ['category'])
-        })
+    return request({
+        method: method,
+        uri: `${opts.fallback}${req.url}`,
+        headers: omit(req.headers, ['category'])
+    })
         .pipe(res);
 }
