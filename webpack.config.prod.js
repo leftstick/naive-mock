@@ -1,7 +1,9 @@
-var resolve = require('path').resolve;
-var webpack = require('webpack');
-var autoprefixer = require('autoprefixer');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const {resolve} = require('path');
+const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
+const postcssNested = require('postcss-nested');
+const postcssVars = require('postcss-simple-vars');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -9,13 +11,13 @@ module.exports = {
     },
     output: {
         path: resolve(__dirname, 'public', 'assets'),
-        filename: '[name].[hash].bundle.js'
+        filename: '[name].bundle.js'
     },
     module: {
         loaders: [
             {
                 test: /\.css$/,
-                loader: 'style/useable!css'
+                loader: 'style!css'
             },
             {
                 test: /\.vue$/,
@@ -34,15 +36,17 @@ module.exports = {
     },
     vue: {
         loaders: {
-            js: 'babel?{"presets":["es2015"]}!eslint',
-            css: 'vue-style!css!postcss!less'
+            js: 'babel?{"presets":["es2015"],"plugins": ["transform-object-rest-spread"]}!eslint',
+            css: 'vue-style!css!postcss'
         }
     },
     postcss: function() {
         return [
             autoprefixer({
                 browsers: ['last 5 versions']
-            })
+            }),
+            postcssNested(),
+            postcssVars()
         ];
     },
     resolve: {
@@ -54,10 +58,14 @@ module.exports = {
             '',
             '.js',
             '.vue'
-        ]
+        ],
+        alias: {
+            vue$: 'vue/dist/vue.js'
+        }
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: '"production"'
@@ -68,13 +76,14 @@ module.exports = {
                 warnings: false
             }
         }),
-        new webpack.optimize.CommonsChunkPlugin('[hash].common.bundle.js'),
+        new webpack.optimize.CommonsChunkPlugin('common.bundle.js'),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             inject: 'body',
-            template: 'www/index.html_vm',
+            template: 'www/index.html',
             favicon: 'www/img/favicon.ico',
-            hash: false
+            hash: false,
+            version: require('./package').version
         })
     ]
 };

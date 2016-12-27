@@ -5,11 +5,11 @@ import {UPDATE_APIS_QUERY, UPDATE_APIS_OPERATING, UPDATE_API_LIST} from '../../m
 import {pickNotEmpty} from 'fw/util/Object';
 
 export function updateAPIsQuery({commit, state}, payload) {
-    commit(UPDATE_APIS_QUERY.name, payload);
+    commit(UPDATE_APIS_QUERY.type, payload);
 }
 
 export function resetAPIsQuery({commit, state}, payload) {
-    commit(UPDATE_APIS_QUERY.name, {
+    commit(UPDATE_APIS_QUERY.type, {
         api: '',
         category: '',
         status: ''
@@ -17,48 +17,48 @@ export function resetAPIsQuery({commit, state}, payload) {
 }
 
 export function getAPI({commit, state}, id) {
-    commit(UPDATE_APIS_OPERATING.name, true);
+    commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
         .get(`/internal-used/api/${id}`)
         .then(response => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             return response.data.data;
         }, err => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             throw err;
         });
 }
 
 export function deleteAPI({commit, state}, id) {
-    commit(UPDATE_APIS_OPERATING.name, true);
+    commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
         .delete(`/internal-used/api/${id}`)
         .then(response => {
-            commit(UPDATE_APIS_OPERATING.name, false);
-            commit(UPDATE_API_LIST.name, state.apis.data.list.filter(a => a.id !== id));
+            commit(UPDATE_APIS_OPERATING.type, false);
+            commit(UPDATE_API_LIST.type, state.apis.data.list.filter(a => a.id !== id));
             return response.data.data;
         }, err => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             throw err;
         });
 }
 
 
 export function fetchAPIs({commit, state}) {
-    commit(UPDATE_APIS_OPERATING.name, true);
+    commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
         .get('/internal-used/apis', {
             params: pickNotEmpty(state.apis.query)
         })
         .then(response => {
-            commit(UPDATE_APIS_OPERATING.name, false);
-            commit(UPDATE_API_LIST.name, response.data.data);
+            commit(UPDATE_APIS_OPERATING.type, false);
+            commit(UPDATE_API_LIST.type, response.data.data);
             return response.data.data;
         }, err => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             throw err;
         });
 }
@@ -70,16 +70,16 @@ export function createAPI({commit, state}, api) {
         return Promise.reject(error);
     }
 
-    commit(UPDATE_APIS_OPERATING.name, true);
+    commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
         .post('/internal-used/api', api)
         .then(response => {
-            commit(UPDATE_APIS_OPERATING.name, false);
-            commit(UPDATE_API_LIST.name, [response.data.data, ...state.apis.data.list]);
+            commit(UPDATE_APIS_OPERATING.type, false);
+            commit(UPDATE_API_LIST.type, [response.data.data, ...state.apis.data.list]);
             return response.data.data;
         }, err => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             throw err;
         });
 }
@@ -94,16 +94,16 @@ export function updateAPI({commit, state}, api) {
         return Promise.reject(error);
     }
 
-    commit(UPDATE_APIS_OPERATING.name, true);
+    commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
         .put(`/internal-used/api/${api.id}`, api)
         .then(response => {
-            commit(UPDATE_APIS_OPERATING.name, false);
-            commit(UPDATE_API_LIST.name, [response.data.data, ...state.apis.data.list.filter(a => a.id !== api.id)]);
+            commit(UPDATE_APIS_OPERATING.type, false);
+            commit(UPDATE_API_LIST.type, [response.data.data, ...state.apis.data.list.filter(a => a.id !== api.id)]);
             return response.data.data;
         }, err => {
-            commit(UPDATE_APIS_OPERATING.name, false);
+            commit(UPDATE_APIS_OPERATING.type, false);
             throw err;
         });
 }

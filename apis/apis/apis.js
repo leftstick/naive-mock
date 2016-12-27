@@ -4,24 +4,18 @@ module.exports.api = '/internal-used/apis';
 
 module.exports.get = function*(req, res, next) {
 
-    const {api, method, category, status} = req.query;
+    const params = req.query;
+    const paramsKeys = Object.keys(params);
 
     const list = apis
         .getAPIs()
         .filter(a => {
-            if (a.api.includes(api)) {
+            //no filter
+            if (paramsKeys.every(k => !params[k])) {
                 return true;
             }
-            if (a.category === category) {
-                return true;
-            }
-            if (a.method === method) {
-                return true;
-            }
-            if (a.status === status) {
-                return true;
-            }
-            if (!api && !method && !category && !status) {
+            const valueKeys = paramsKeys.filter(k => params[k]);
+            if (valueKeys.every(k => a[k].includes(params[k]))) {
                 return true;
             }
             return false;
