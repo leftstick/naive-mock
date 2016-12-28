@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div v-loading="apisListOperating">
         <api-form @save="save" @back="back" type="Modify" :info="apiInfo" v-if="apiInfo"></api-form>
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 
 import apiForm from './base/apiForm';
 
@@ -14,6 +14,11 @@ export default {
         return {
             apiInfo: null
         };
+    },
+    computed: {
+        ...mapGetters([
+            'apisListOperating'
+        ])
     },
     methods: {
         ...mapActions([
