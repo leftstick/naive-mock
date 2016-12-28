@@ -4,7 +4,7 @@ const {omit} = require('../../fw/util/Object');
 const apis = require('../../fw/loader/apis');
 const settings = require('../../fw/loader/settings');
 
-module.exports.api = /^\/n\//;
+module.exports.api = /^\/m\//;
 
 module.exports.get = function*(req, res, next) {
     search(req, res, 'GET');
@@ -27,7 +27,7 @@ module.exports.delete = function*(req, res, next) {
 };
 
 function search(req, res, method) {
-    const url = req.url.replace(/^\/n/, '');
+    const url = req.url.replace(/^\/m/, '');
     const models = apis.getAPIs().filter(a => a.api === url && a.method === method);
 
     if (!models.length) { //no api defined, fallback

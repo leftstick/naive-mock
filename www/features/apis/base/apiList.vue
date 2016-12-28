@@ -43,7 +43,7 @@ export default {
         ]),
         clickApi(row, column, cell, event) {
             if (column.property === 'api') {
-                this.tryCmd = `curl -X ${row.method} -H "category:${row.category}" ${window.location.origin}/n${row.api}`;
+                this.tryCmd = `curl -X ${row.method} -H "category:${row.category}" ${window.location.origin}/m${row.api}`;
                 this.$refs.verify.open();
             }
         },
