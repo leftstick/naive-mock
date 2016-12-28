@@ -5,8 +5,12 @@
             <el-table-column prop="category" label="Category" sortable width="150"></el-table-column>
             <el-table-column prop="method" label="Method" sortable width="100"></el-table-column>
             <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
-            <el-table-column :context="_self" inline-template label="Oper" width="90">
+            <el-table-column :context="_self" inline-template label="Enabled" width="125">
+                <div>{{ row.enabled ? 'Enabled' : 'Disabled' }}</div>
+            </el-table-column>
+            <el-table-column :context="_self" inline-template label="Oper" width="130">
                 <div>
+                    <switcher :disabled="row.category === 'example'" :pre="row.enabled" @change="handleSwitch($index, row, arguments[0])"></switcher>
                     <el-button size="small" type="text" icon="edit" :disabled="row.category === 'example'" @click="handleEdit($index, row)"></el-button>
                     <el-button size="small" type="text" icon="delete" :disabled="row.category === 'example'" @click="handleDelete($index, row)"></el-button>
                 </div>
@@ -25,6 +29,8 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex';
+import {eraseGetter} from 'fw/util/Object';
+import switcher from './switcher';
 
 export default {
     data() {
@@ -39,13 +45,24 @@ export default {
     },
     methods: {
         ...mapActions([
-            'deleteAPI'
+            'deleteAPI',
+            'updateAPI'
         ]),
         clickApi(row, column, cell, event) {
             if (column.property === 'api') {
+                if (!row.enabled) {
+                    return this.$alert('This API is not accessable since it was disabled', 'Info');
+                }
                 this.tryCmd = `curl -X ${row.method} -H "category:${row.category}" ${window.location.origin}/m${row.api}`;
                 this.$refs.verify.open();
             }
+        },
+        handleSwitch(index, row, val) {
+            const info = eraseGetter(row);
+            info.enabled = val;
+            this
+                .updateAPI(info)
+                .catch(this._error);
         },
         handleEdit(index, row) {
             this.$router.push({
@@ -59,13 +76,17 @@ export default {
             .then(() => {
                 return this.deleteAPI(row.id);
             })
-            .catch(err => {
-                if (err === 'cancel') {
-                    return;
-                }
-                this.$message.error(err.message);
-            });
+            .catch(this._error);
+        },
+        _error(err) {
+            if (err === 'cancel') {
+                return;
+            }
+            this.$message.error(err.message);
         }
+    },
+    components: {
+        switcher
     }
 };
 

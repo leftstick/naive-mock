@@ -14,6 +14,9 @@
             <el-form-item label="Status" class="status">
                 <statuses @change="set('status', arguments[0])" :pre="api.status"></statuses>
             </el-form-item>
+            <el-form-item label="Enabled" class="enabled">
+                <el-switch v-model="api.enabled" on-text="" off-text="" @change="set('enabled', arguments[0])"></el-switch>
+            </el-form-item>
             <codemirror :code="api.response" :options="editorOpts" @changed="set('response', arguments[0])"></codemirror>
             <el-form-item style="margin-top: 35px;">
                 <el-button type="primary" @click="save">{{ type }}</el-button>
@@ -33,7 +36,7 @@ import methods from './methods';
 export default {
     data() {
         return {
-            api: this.type === 'Create' ? {api: '', category: '', status: '200', response: ''} : eraseGetter(this.info),
+            api: this.type === 'Create' ? {api: '', category: '', status: '200', response: '', enabled: true} : eraseGetter(this.info),
             editorOpts: {
                 tabSize: 4,
                 indentWithTabs: true,

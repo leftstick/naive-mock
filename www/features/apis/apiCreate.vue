@@ -1,5 +1,7 @@
 <template>
-    <api-form @save="save" @back="back" type="Create"></api-form>
+    <div>
+        <api-form @save="save" @back="back" type="Create"></api-form>
+    </div>
 </template>
 
 <script>

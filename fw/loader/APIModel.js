@@ -5,6 +5,7 @@ class APIModel {
         this.id = raw.id;
         this.api = raw.api;
         this.method = raw.method;
+        this.enabled = raw.enabled;
         this.category = raw.category;
         this.status = raw.status;
         this.headers = raw.headers || {};

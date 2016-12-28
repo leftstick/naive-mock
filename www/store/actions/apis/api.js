@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {UPDATE_APIS_QUERY, UPDATE_APIS_OPERATING, UPDATE_API_LIST} from '../../mutations';
 
-import {pickNotEmpty} from 'fw/util/Object';
+import {pickNotEmpty, isString} from 'fw/util/Object';
 
 export function updateAPIsQuery({commit, state}, payload) {
     commit(UPDATE_APIS_QUERY.type, payload);
@@ -127,6 +127,9 @@ function valideAPI(api) {
     }
     if (!api.response) {
         throw new Error('response cannot be empty');
+    }
+    if (!isString(api.response)) {
+        return;
     }
     try {
         api.response = api.response.replace(/\n/g, '').replace(/\t/g, '');

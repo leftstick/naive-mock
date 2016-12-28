@@ -2,6 +2,7 @@
     "api": "/example",
     "method": "GET",
     "status": "200",
+    "enabled": true,
     "category": "example",
     "headers": {},
     "response": {
