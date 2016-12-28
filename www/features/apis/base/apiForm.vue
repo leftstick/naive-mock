@@ -19,7 +19,7 @@
             </el-form-item>
             <codemirror :code="api.response" :options="editorOpts" @changed="set('response', arguments[0])"></codemirror>
             <el-form-item style="margin-top: 35px;">
-                <el-button type="primary" @click="save">{{ type }}</el-button>
+                <el-button type="primary" @click="save" :loading="apisListOperating">{{ type }}</el-button>
                 <el-button @click="back">Back</el-button>
             </el-form-item>
         </el-form>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
 import {eraseGetter} from 'fw/util/Object';
 
 import categories from './categories';
@@ -36,7 +37,7 @@ import methods from './methods';
 export default {
     data() {
         return {
-            api: this.type === 'Create' ? {api: '', category: '', status: '200', response: '', enabled: true} : eraseGetter(this.info),
+            api: this.type === 'Create' ? {api: '', method: 'GET', category: '', status: '200', response: '', enabled: true} : eraseGetter(this.info),
             editorOpts: {
                 tabSize: 4,
                 indentWithTabs: true,
@@ -63,6 +64,11 @@ export default {
             type: Object,
             required: false
         }
+    },
+    computed: {
+        ...mapGetters([
+            'apisListOperating'
+        ])
     },
     methods: {
         set(field, val) {

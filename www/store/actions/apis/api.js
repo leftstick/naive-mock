@@ -100,7 +100,7 @@ export function updateAPI({commit, state}, api) {
         .put(`/internal-used/api/${api.id}`, api)
         .then(response => {
             commit(UPDATE_APIS_OPERATING.type, false);
-            commit(UPDATE_API_LIST.type, [response.data.data, ...state.apis.data.list.filter(a => a.id !== api.id)]);
+            commit(UPDATE_API_LIST.type, state.apis.data.list.map(a => a.id !== api.id ? a : response.data.data));
             return response.data.data;
         }, err => {
             commit(UPDATE_APIS_OPERATING.type, false);
