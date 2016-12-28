@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="apisListOperating">
+    <div v-loading="apisListOperating" class="container">
         <api-form @save="save" @back="back" type="Modify" :info="apiInfo" v-if="apiInfo"></api-form>
     </div>
 </template>
@@ -61,5 +61,7 @@ export default {
 </script>
 
 <style scoped>
-
+    .container {
+        min-height: 70%;
+    }
 </style>

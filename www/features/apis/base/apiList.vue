@@ -11,7 +11,7 @@
             <el-table-column :context="_self" inline-template label="Oper" width="130">
                 <div>
                     <switcher :disabled="row.category === 'example'" :pre="row.enabled" @change="handleSwitch($index, row, arguments[0])"></switcher>
-                    <el-button size="small" type="text" icon="edit" :disabled="row.category === 'example'" @click="handleEdit($index, row)"></el-button>
+                    <el-button size="small" type="text" icon="edit" :disabled="row.category === 'example'" @click="handleEdit($index, row)" style="margin-left: 10px;"></el-button>
                     <el-button size="small" type="text" icon="delete" :disabled="row.category === 'example'" @click="handleDelete($index, row)"></el-button>
                 </div>
             </el-table-column>
