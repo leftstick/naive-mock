@@ -1,7 +1,8 @@
 
 export const settings = {
     data: {
-        fallback: ''
+        fallback: '',
+        saveFallbackResult: false
     },
     operating: false
 };

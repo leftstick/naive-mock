@@ -27,10 +27,11 @@
     </div>
 </template>
 
+
 <script>
 import {mapGetters, mapActions} from 'vuex';
 import {eraseGetter} from 'fw/util/Object';
-import switcher from './switcher';
+import switcher from 'common/switcher';
 
 export default {
     data() {

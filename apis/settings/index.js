@@ -10,9 +10,10 @@ module.exports.get = function*(req, res, next) {
 
 module.exports.put = function*(req, res, next) {
 
-    const {fallback} = req.body;
+    const {fallback, saveFallbackResult} = req.body;
 
     settings.set('fallback', fallback.replace(/\/$/, ''));
+    settings.set('saveFallbackResult', saveFallbackResult);
 
     const result = yield settings.save();
 

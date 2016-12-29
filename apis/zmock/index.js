@@ -1,9 +1,12 @@
+const uuidV1 = require('uuid/v1');
 const request = require('request');
 const minimatch = require('minimatch');
 
 const {omit} = require('../../fw/util/Object');
 const apis = require('../../fw/loader/apis');
 const settings = require('../../fw/loader/settings');
+
+const Model = require('../../fw/loader/APIModel');
 
 module.exports.api = /^\/m\//;
 
@@ -70,6 +73,14 @@ function fallback(req, res, method) {
                 message: 'fallback server is unavailable now'
             });
         })
+        .on('response', function(response) {
+            if (!req.category()) {
+                return;
+            }
+            response.on('data', function(data) {
+                saveFallbackResult(url, method, req.category(), response.statusCode, data.toString());
+            });
+        })
         .pipe(res);
 }
 
@@ -91,4 +102,18 @@ function matchURL(url, pattern) {
         nonegate: false,
         flipNegate: false
     });
+}
+
+function saveFallbackResult(url, method, category, statusCode, responseStr) {
+    const model = new Model({
+        id: uuidV1(),
+        api: url,
+        method: method,
+        enabled: true,
+        category: category,
+        status: statusCode,
+        headers: {}, //TODO: header maybe supported later
+        response: JSON.parse(responseStr)
+    });
+    apis.saveAPI(model);
 }

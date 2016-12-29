@@ -1,8 +1,11 @@
 <template>
     <div class="settings" v-loading="settingsOperating">
-        <el-form ref="form" :model="info" label-width="140px" v-if="info">
+        <el-form ref="form" :model="info" label-width="155px" v-if="info">
             <el-form-item label="Fallback Domain">
                 <el-input v-model="info.fallback"></el-input>
+            </el-form-item>
+            <el-form-item label="Save Fallback Result">
+                <switcher :pre="info.saveFallbackResult" @change="set('saveFallbackResult', arguments[0])"></switcher>
             </el-form-item>
             <el-form-item class="submit">
                 <el-button type="primary" @click="onSubmit">Save</el-button>
@@ -16,6 +19,7 @@
 import {mapActions, mapGetters} from 'vuex';
 
 import {eraseGetter} from 'fw/util/Object';
+import switcher from 'common/switcher';
 
 export default {
     data() {
@@ -34,6 +38,9 @@ export default {
             'fetchSettings',
             'updateSettings'
         ]),
+        set(field, val) {
+            this.info[field] = val;
+        },
         onSubmit() {
             this
                 .updateSettings(eraseGetter(this.info))
@@ -57,9 +64,14 @@ export default {
         this
             .fetchSettings()
             .then(item => {
-                this.info = eraseGetter(item);
+                this.info = {};
+                this.info.fallback = item.fallback || '';
+                this.info.saveFallbackResult = !!item.saveFallbackResult;
             })
             .catch(this._onerror);
+    },
+    components: {
+        switcher
     }
 };
 
