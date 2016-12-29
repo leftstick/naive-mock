@@ -53,11 +53,16 @@ function fallback(req, res, method) {
     if (!opts.fallback) {
         return res.status(404).end();
     }
-    return request({
+
+    const options = {
         method: method,
         uri: `${opts.fallback}${url}`,
         headers: omit(req.headers, ['category'])
-    })
+    };
+    if ((method === 'PATCH' || method === 'POST' || method === 'PUT') && req.body) {
+        options.body = JSON.stringify(req.body);
+    }
+    return request(options)
         .on('error', function(err) {
             return res.sendError(404, {
                 name: 'Fallback Error',
