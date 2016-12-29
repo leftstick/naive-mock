@@ -2,7 +2,9 @@
     <div class="settings" v-loading="settingsOperating">
         <el-form ref="form" :model="info" label-width="155px" v-if="info">
             <el-form-item label="Fallback Domain">
-                <el-input v-model="info.fallback"></el-input>
+                <el-input v-model="info.fallback">
+                    <el-button slot="append" icon="information" @click="goHelp('what-is-fallback')"></el-button>
+                </el-input>
             </el-form-item>
             <el-form-item label="Save Fallback Result">
                 <switcher :pre="info.saveFallbackResult" @change="set('saveFallbackResult', arguments[0])"></switcher>
@@ -19,6 +21,8 @@
 import {mapActions, mapGetters} from 'vuex';
 
 import {eraseGetter} from 'fw/util/Object';
+
+import Help from 'common/mixins/help';
 import switcher from 'common/switcher';
 
 export default {
@@ -27,6 +31,7 @@ export default {
             info: null
         };
     },
+    mixins: [Help],
     computed: {
         ...mapGetters([
             'settings',

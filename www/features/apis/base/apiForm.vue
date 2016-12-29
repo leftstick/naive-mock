@@ -3,7 +3,9 @@
         <h1>{{ type }} API</h1>
         <el-form ref="query" :model="api" label-width="80px">
             <el-form-item label="API name" class="api">
-                <el-input :value="api.api" @change="set('api', arguments[0])"></el-input>
+                <el-input :value="api.api" @change="set('api', arguments[0])">
+                    <el-button slot="append" icon="information" @click="goHelp('how-to-create-mock-api')"></el-button>
+                </el-input>
             </el-form-item>
             <el-form-item label="Category" class="category">
                 <categories @change="set('category', arguments[0])" :pre="api.category" disable-item="example"></categories>
@@ -30,6 +32,7 @@
 import {mapGetters} from 'vuex';
 import {eraseGetter} from 'fw/util/Object';
 
+import Help from 'common/mixins/help';
 import categories from './categories';
 import statuses from './statuses';
 import methods from './methods';
@@ -55,6 +58,7 @@ export default {
             }
         };
     },
+    mixins: [Help],
     props: {
         type: {
             type: String,
