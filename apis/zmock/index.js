@@ -74,7 +74,7 @@ function fallback(req, res, method) {
             });
         })
         .on('response', function(response) {
-            if (!req.category()) {
+            if (!opts.saveFallbackResult || !req.category()) {
                 return;
             }
             response.on('data', function(data) {

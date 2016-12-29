@@ -2,6 +2,7 @@ const fs = require('fs');
 const winston = require('winston');
 const mkdirp = require('mkdirp');
 const moment = require('moment');
+const chalk = require('chalk');
 
 const config = require('../config');
 const env = require('../util/Env');
@@ -35,7 +36,7 @@ class Logger {
 
     error(message) {
         if (env.isDev) {
-            console.error(message);
+            console.error(chalk.red(message));
         }
         this.errorLog.error(solveMsg(message));
     }

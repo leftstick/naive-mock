@@ -1,4 +1,5 @@
 const config = require('../../../config');
+const chalk = require('chalk');
 
 module.exports = function(app) {
 
@@ -9,7 +10,7 @@ module.exports = function(app) {
                 if (err) {
                     return reject(err);
                 }
-                console.log(`Express server listening on port ${config.server.port}`);
+                console.log(chalk.green(`naive-mock just started, open http://127.0.0.1:${config.server.port} and enjoy`));
                 resolve();
             });
         });

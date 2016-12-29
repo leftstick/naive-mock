@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 const logger = require('./fw/logger');
 const expressSetup = require('./fw/instance/express');
 const apis = require('./apis');
@@ -7,7 +9,7 @@ const co = require('co');
 
 const app = require('./fw/instance')();
 
-const application = co(function*() {
+co(function*() {
     app.config(expressSetup);
 
     yield app.dataReady();
@@ -19,10 +21,8 @@ const application = co(function*() {
 
 }).catch(function(err) {
     logger.error(err.message);
-    console.log(err);
+    console.log(chalk.red(err));
     setTimeout(function() {
         process.exit(-1);
     }, 2000);
 });
-
-module.exports = application;

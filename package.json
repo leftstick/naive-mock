@@ -2,14 +2,24 @@
   "name": "naive-mock",
   "version": "1.0.0",
   "description": "A lightweight mock system with web configuration interface",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "bin": {
     "mock": "./bin/index.js"
   },
   "engines": {
-    "node" : ">=7.0",
-    "npm" : ">=3.0"
+    "node": ">=7.0",
+    "npm": ">=3.0"
   },
+  "files": [
+    "apis",
+    "bin",
+    "example-data",
+    "fw",
+    "public",
+    "route",
+    "www",
+    "app.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leftstick/naive-mock.git"
@@ -18,15 +28,16 @@
     "start": "node app.js",
     "predist": "rm -rf public/assets",
     "dist": "webpack --config webpack.config.prod.js",
-    "patch": "node patch/index.js"
+    "prepublish": "npm run dist"
   },
   "dependencies": {
     "axios": "^0.15.3",
     "body-parser": "^1.15.2",
+    "chalk": "^1.1.3",
     "co": "^4.6.0",
     "commander": "^2.9.0",
     "cookie-parser": "^1.4.3",
-    "element-ui": "^1.0.9",
+    "element-ui": "^1.1.1",
     "express": "^4.14.0",
     "minimatch": "^3.0.3",
     "mkdirp": "^0.5.1",

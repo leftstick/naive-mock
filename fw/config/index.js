@@ -6,8 +6,8 @@ module.exports.dataDir = process.env.MOCK_DATA_DIR || resolve(WORKROOT, 'data');
 
 module.exports.settingsFile = resolve(WORKROOT, 'settings.json');
 
-module.exports.logPath = './log';
+module.exports.logPath = resolve(WORKROOT, 'log');
 
 module.exports.server = {
-    port: 3000
+    port: process.env.MOCK_PORT || 3000
 };
