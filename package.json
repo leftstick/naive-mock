@@ -1,7 +1,15 @@
 {
   "name": "naive-mock",
   "version": "1.0.0",
+  "description": "A lightweight mock system with web configuration interface",
   "license": "MIT",
+  "bin": {
+    "mock": "./bin/index.js"
+  },
+  "engines": {
+    "node" : ">=7.0",
+    "npm" : ">=3.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leftstick/naive-mock.git"
@@ -16,6 +24,7 @@
     "axios": "^0.15.3",
     "body-parser": "^1.15.2",
     "co": "^4.6.0",
+    "commander": "^2.9.0",
     "cookie-parser": "^1.4.3",
     "element-ui": "^1.0.9",
     "express": "^4.14.0",
@@ -23,6 +32,7 @@
     "mkdirp": "^0.5.1",
     "moment": "^2.17.1",
     "request": "^2.79.0",
+    "update-notifier": "^1.0.3",
     "uuid": "^3.0.1",
     "vue": "^2.1.8",
     "vue-codemirror": "^2.1.5",

@@ -7,7 +7,7 @@ const co = require('co');
 
 const app = require('./fw/instance')();
 
-co(function*() {
+const application = co(function*() {
     app.config(expressSetup);
 
     yield app.dataReady();
@@ -24,3 +24,5 @@ co(function*() {
         process.exit(-1);
     }, 2000);
 });
+
+module.exports = application;
