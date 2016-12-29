@@ -27,7 +27,7 @@ module.exports.delete = function*(req, res, next) {
 };
 
 function search(req, res, method) {
-    const url = req.url.replace(/^\/m/, '');
+    const url = getRealURL(req.url);
     const models = apis.getAPIs().filter(a => a.api === url && a.method === method && a.enabled);
 
     if (!models.length) { //no api defined, fallback
@@ -48,13 +48,14 @@ function search(req, res, method) {
 
 function fallback(req, res, method) {
     const opts = settings.get();
+    const url = getRealURL(req.url);
 
     if (!opts.fallback) {
         return res.status(404).end();
     }
     return request({
         method: method,
-        uri: `${opts.fallback}${req.url}`,
+        uri: `${opts.fallback}${url}`,
         headers: omit(req.headers, ['category'])
     })
         .on('error', function(err) {
@@ -64,4 +65,8 @@ function fallback(req, res, method) {
             });
         })
         .pipe(res);
+}
+
+function getRealURL(url) {
+    return url.replace(/^\/m/, '');
 }
