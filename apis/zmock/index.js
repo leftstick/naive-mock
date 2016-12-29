@@ -1,4 +1,5 @@
 const request = require('request');
+const minimatch = require('minimatch');
 
 const {omit} = require('../../fw/util/Object');
 const apis = require('../../fw/loader/apis');
@@ -28,7 +29,7 @@ module.exports.delete = function*(req, res, next) {
 
 function search(req, res, method) {
     const url = getRealURL(req.url);
-    const models = apis.getAPIs().filter(a => a.api === url && a.method === method && a.enabled);
+    const models = apis.getAPIs().filter(a => matchURL(url, a.api) && a.method === method && a.enabled);
 
     if (!models.length) { //no api defined, fallback
         return fallback(req, res, method);
@@ -74,4 +75,20 @@ function fallback(req, res, method) {
 
 function getRealURL(url) {
     return url.replace(/^\/m/, '');
+}
+
+function matchURL(url, pattern) {
+    return minimatch(url, pattern, {
+        debug: false,
+        nobrace: true,
+        noglobstar: true,
+        dot: false,
+        noext: true,
+        nocase: false,
+        nonull: false,
+        matchBase: false,
+        nocomment: true,
+        nonegate: false,
+        flipNegate: false
+    });
 }
