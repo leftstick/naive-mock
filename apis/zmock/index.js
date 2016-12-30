@@ -119,5 +119,9 @@ function saveFallbackResult(url, method, category, statusCode, responseStr) {
         headers: {}, //TODO: header maybe supported later
         response: JSON.parse(responseStr)
     });
+
+    if (apis.getAPIs().some(d => d.id !== model.id && d.equals(model))) {
+        return;
+    }
     apis.saveAPI(model);
 }
