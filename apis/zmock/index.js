@@ -74,11 +74,15 @@ function fallback(req, res, method) {
             });
         })
         .on('response', function(response) {
-            if (!opts.saveFallbackResult || !req.category()) {
+            if (response.statusCode !== 200 || !opts.saveFallbackResult || !req.category()) {
                 return;
             }
-            response.on('data', function(data) {
-                saveFallbackResult(url, method, req.category(), response.statusCode, data.toString());
+            const body = [];
+            response.on('data', function(chunk) {
+                body.push(chunk);
+            });
+            response.on('end', function() {
+                saveFallbackResult(url, method, req.category(), response.statusCode, Buffer.concat(body).toString());
             });
         })
         .pipe(res);
