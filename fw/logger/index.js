@@ -42,7 +42,9 @@ class Logger {
         if (env.isDev || this.logPath === 'NO_LOG') {
             console.error(chalk.red(message));
         }
-        this.errorLog.error(solveMsg(message));
+        if (this.logPath !== 'NO_LOG') {
+            this.errorLog.error(solveMsg(message));
+        }
     }
 
 }
