@@ -1,7 +1,4 @@
-const webpack = require('webpack');
-const webpackMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const config = require('../webpack.config.dev');
+
 const {join} = require('path');
 
 const envUtil = require('../fw/util/Env');
@@ -10,6 +7,11 @@ module.exports = function(app) {
     if (envUtil.isProduction) {
         return;
     }
+
+    const webpack = require('webpack');
+    const webpackMiddleware = require('webpack-dev-middleware');
+    const webpackHotMiddleware = require('webpack-hot-middleware');
+    const config = require('../webpack.config.dev');
     const compiler = webpack(config);
     const middleware = webpackMiddleware(compiler, {
         publicPath: config.output.publicPath,

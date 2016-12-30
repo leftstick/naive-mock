@@ -32,7 +32,7 @@ module.exports.delete = function*(req, res, next) {
 
 function search(req, res, method) {
     const url = getRealURL(req.url);
-    const models = apis.getAPIs().filter(a => matchURL(url, a.api) && a.method === method && a.enabled);
+    const models = apis.getAPIs().filter(a => a.method === method && a.enabled && matchURL(url, a.api));
 
     if (!models.length) { //no api defined, fallback
         return fallback(req, res, method);

@@ -20,6 +20,9 @@ npm install --global naive-mock
 ## Options ##
 
 - `port` - Specify port number you want `naive-mock` run for
+- `dataDir` - Specify where to put mock data, for example: `./data`
+- `settings` - Specify a file to save settings, for example: `./settings.json`
+- `logDir` - Specify where to put error log. Useful when you have error using `naive-mock`, you can send error log to me. No log recorded by default
 - `help` - Print help menu with the list of arguments
 - `version` - Print what version it is
 

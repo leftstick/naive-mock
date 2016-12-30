@@ -1,6 +1,6 @@
 {
   "name": "naive-mock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight mock system with web configuration interface",
   "license": "GPL-3.0",
   "bin": {

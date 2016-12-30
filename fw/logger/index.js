@@ -13,6 +13,10 @@ class Logger {
     constructor() {
         this.logPath = config.logPath;
 
+        if (this.logPath === 'NO_LOG') {
+            return;
+        }
+
         if (!fs.existsSync(this.logPath)) {
             mkdirp.sync(this.logPath);
         }
@@ -35,7 +39,7 @@ class Logger {
     }
 
     error(message) {
-        if (env.isDev) {
+        if (env.isDev || this.logPath === 'NO_LOG') {
             console.error(chalk.red(message));
         }
         this.errorLog.error(solveMsg(message));
