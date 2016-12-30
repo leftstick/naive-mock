@@ -6,8 +6,8 @@
                     <el-button slot="append" icon="information" @click="goHelp('what-is-fallback')"></el-button>
                 </el-input>
             </el-form-item>
-            <el-form-item label="Save Fallback Result">
-                <switcher :pre="info.saveFallbackResult" @change="set('saveFallbackResult', arguments[0])"></switcher>
+            <el-form-item label="Save Fallback Result" class="savefallback">
+                <save-fallback :pre="info.saveFallbackResult" @change="updateSaveFallback"></save-fallback>
             </el-form-item>
             <el-form-item class="submit">
                 <el-button type="primary" @click="onSubmit">Save</el-button>
@@ -24,6 +24,7 @@ import {eraseGetter} from 'fw/util/Object';
 
 import Help from 'common/mixins/help';
 import switcher from 'common/switcher';
+import saveFallback from './base/saveFallback';
 
 export default {
     data() {
@@ -43,8 +44,10 @@ export default {
             'fetchSettings',
             'updateSettings'
         ]),
-        set(field, val) {
-            this.info[field] = val;
+        updateSaveFallback(vals) {
+            vals.forEach(k => {
+                this.info.saveFallbackResult[k] = true;
+            });
         },
         onSubmit() {
             this
@@ -71,12 +74,13 @@ export default {
             .then(item => {
                 this.info = {};
                 this.info.fallback = item.fallback || '';
-                this.info.saveFallbackResult = !!item.saveFallbackResult;
+                this.info.saveFallbackResult = eraseGetter(item.saveFallbackResult) || {};
             })
             .catch(this._onerror);
     },
     components: {
-        switcher
+        switcher,
+        saveFallback
     }
 };
 
@@ -94,5 +98,8 @@ export default {
         .submit {
             margin-top: 50px;
         }
+    }
+    .savefallback {
+        height: 300px;
     }
 </style>
