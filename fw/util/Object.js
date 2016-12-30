@@ -117,3 +117,11 @@ module.exports.pickNotEmpty = function(obj) {
         .filter(key => obj[key])
         .reduce((p, c) => (p[c] = obj[c], p), val);
 };
+
+module.exports.serializeRequestBody = function self(obj) {
+    const isNull = module.exports.isNull;
+    if (isNull(obj)) {
+        return obj;
+    }
+    return obj.toString();
+};

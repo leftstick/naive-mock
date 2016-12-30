@@ -2,7 +2,7 @@ const uuidV1 = require('uuid/v1');
 const request = require('request');
 const minimatch = require('minimatch');
 
-const {omit} = require('../../fw/util/Object');
+const {omit, serializeRequestBody} = require('../../fw/util/Object');
 const apis = require('../../fw/loader/apis');
 const settings = require('../../fw/loader/settings');
 
@@ -31,21 +31,13 @@ module.exports.delete = function*(req, res, next) {
 };
 
 function search(req, res, method) {
-    const url = getRealURL(req.url);
-    const models = apis.getAPIs().filter(a => a.method === method && a.enabled && matchURL(url, a.api));
+
+    const models = apis.getAPIs().filter(a => matchAPI(a, method, req));
 
     if (!models.length) { //no api defined, fallback
         return fallback(req, res, method);
     }
-    const category = req.category();
 
-    if (!category) { //no category specified, fallback
-        return fallback(req, res, method);
-    }
-
-    if (category && models.every(m => m.category !== category)) { //no api defined for specific category, fallback
-        return fallback(req, res, method);
-    }
     const model = models[0];
     res.set(model.headers).sendMock(model.response);
 }
@@ -63,8 +55,9 @@ function fallback(req, res, method) {
         uri: `${opts.fallback}${url}`,
         headers: omit(req.headers, ['category'])
     };
-    if ((method === 'PATCH' || method === 'POST' || method === 'PUT') && req.body) {
-        options.body = JSON.stringify(req.body);
+
+    if (req.body) {
+        options.body = req.body;
     }
     return request(options)
         .on('error', function(err) {
@@ -74,7 +67,7 @@ function fallback(req, res, method) {
             });
         })
         .on('response', function(response) {
-            if (response.statusCode !== 200 || !opts.saveFallbackResult || !req.category()) {
+            if (noSave(opts, req)) {
                 return;
             }
             const body = [];
@@ -82,7 +75,7 @@ function fallback(req, res, method) {
                 body.push(chunk);
             });
             response.on('end', function() {
-                saveFallbackResult(url, method, req.category(), response.statusCode, Buffer.concat(body).toString());
+                saveFallbackResult(url, method, req.category(), response.statusCode, options.body ? options.body.toString().trim() : null, Buffer.concat(body).toString().trim());
             });
         })
         .pipe(res);
@@ -90,6 +83,26 @@ function fallback(req, res, method) {
 
 function getRealURL(url) {
     return url.replace(/^\/m/, '');
+}
+
+function matchAPI(a, method, req) {
+    const url = getRealURL(req.url);
+    if (a.method !== method) {
+        return false;
+    }
+    if (a.category !== req.category()) {
+        return false;
+    }
+    if (serializeRequestBody(a.body) !== serializeRequestBody(req.body)) {
+        return false;
+    }
+    if (!a.enabled) {
+        return false;
+    }
+    if (matchURL(url, a.api)) {
+        return false;
+    }
+    return true;
 }
 
 function matchURL(url, pattern) {
@@ -108,7 +121,13 @@ function matchURL(url, pattern) {
     });
 }
 
-function saveFallbackResult(url, method, category, statusCode, responseStr) {
+function noSave(opts, req) {
+    if (!opts.saveFallbackResult || !req.category() || !opts.saveFallbackResult[req.category()] || req.category() === 'example') {
+        return true;
+    }
+}
+
+function saveFallbackResult(url, method, category, statusCode, requestBody, responseStr) {
     const model = new Model({
         id: uuidV1(),
         api: url,
@@ -116,8 +135,9 @@ function saveFallbackResult(url, method, category, statusCode, responseStr) {
         enabled: true,
         category: category,
         status: statusCode,
+        body: requestBody,
         headers: {}, //TODO: header maybe supported later
-        response: JSON.parse(responseStr)
+        response: responseStr ? JSON.parse(responseStr) : {}
     });
 
     if (apis.getAPIs().some(d => d.id !== model.id && d.equals(model))) {

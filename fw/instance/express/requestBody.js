@@ -1,10 +1,24 @@
 const bodyParser = require('body-parser');
 
 module.exports = function(app) {
-    app.use(bodyParser.json({
+
+    const jsonParser = bodyParser.json({
         strict: false
-    }));
-    app.use(bodyParser.urlencoded({
-        extended: false
-    }));
+    });
+
+    app.use(/^\/internal-used\/.*/, jsonParser);
+
+    app.use(/\/m/, function(req, res, next) {
+        const body = [];
+        req.on('data', function(chunk) {
+            body.push(chunk);
+        });
+        req.on('end', function() {
+            if (body.length) {
+                req.body = Buffer.concat(body);
+            }
+            next();
+        });
+
+    });
 };

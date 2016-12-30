@@ -45,6 +45,12 @@ export default {
             'updateSettings'
         ]),
         updateSaveFallback(vals) {
+            Object
+                .keys(this.info.saveFallbackResult)
+                .forEach(k => {
+                    this.info.saveFallbackResult[k] = false;
+                });
+                
             vals.forEach(k => {
                 this.info.saveFallbackResult[k] = true;
             });

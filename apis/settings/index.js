@@ -15,7 +15,7 @@ module.exports.get = function*(req, res, next) {
     const categories = apis.getCategories();
 
     categories.forEach((c) => {
-        if (isNull(opts.saveFallbackResult[c])) {
+        if (isNull(opts.saveFallbackResult[c]) && c !== 'example') {
             opts.saveFallbackResult[c] = false;
         }
     });

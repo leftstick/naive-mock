@@ -20,6 +20,12 @@ export default {
             required: true
         }
     },
+    watch: {
+        pre() {
+            this.list = Object.keys(this.pre);
+            this.preSelected = Object.keys(this.pre).filter(p => this.pre[p]);
+        }
+    },
     methods: {
         change(vals) {
             this.$emit('change', eraseGetter(vals));
