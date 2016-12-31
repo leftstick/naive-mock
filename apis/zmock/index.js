@@ -1,49 +1,62 @@
-const uuidV1 = require('uuid/v1');
 const request = require('request');
 const minimatch = require('minimatch');
 
-const {omit, serializeRequestBody} = require('../../fw/util/Object');
-const apis = require('../../fw/loader/apis');
-const settings = require('../../fw/loader/settings');
+const {omit} = require('../../fw/util/Object');
+const apiService = require('../../fw/db/service/APIService');
+const settingLoader = require('../../fw/db/SettingLoader');
 
-const Model = require('../../fw/loader/APIModel');
+const Model = require('../../fw/db/service/APIModel');
 
 module.exports.api = /^\/m\//;
 
 module.exports.get = function*(req, res, next) {
-    search(req, res, 'GET');
+    yield search(req, res, 'GET');
 };
 
 module.exports.post = function*(req, res, next) {
-    search(req, res, 'POST');
+    yield search(req, res, 'POST');
 };
 
 module.exports.put = function*(req, res, next) {
-    search(req, res, 'PUT');
+    yield search(req, res, 'PUT');
 };
 
 module.exports.patch = function*(req, res, next) {
-    search(req, res, 'PATCH');
+    yield search(req, res, 'PATCH');
 };
 
 module.exports.delete = function*(req, res, next) {
-    search(req, res, 'DELETE');
+    yield search(req, res, 'DELETE');
 };
 
 function search(req, res, method) {
+    const url = getRealURL(req.url);
 
-    const models = apis.getAPIs().filter(a => matchAPI(a, method, req));
-
-    if (!models.length) { //no api defined, fallback
-        return fallback(req, res, method);
-    }
-
-    const model = models[0];
-    res.set(model.headers).sendMock(model.response);
+    return apiService
+        .search({
+            method: method,
+            test_category: req.category(),
+            enabled: true,
+            body: req.body
+        })
+        .then(items => {
+            if (!items.length) {
+                return fallback(req, res, method);
+            }
+            const filterWithAPIs = items.filter(it => matchURL(url, it.api));
+            if (!filterWithAPIs.length) {
+                return fallback(req, res, method);
+            }
+            const item = filterWithAPIs[0];
+            return res
+                .set(item.headers)
+                .status(item.status)
+                .sendMock(item.response);
+        });
 }
 
 function fallback(req, res, method) {
-    const opts = settings.get();
+    const opts = settingLoader.get();
     const url = getRealURL(req.url);
 
     if (!opts.fallback) {
@@ -53,56 +66,47 @@ function fallback(req, res, method) {
     const options = {
         method: method,
         uri: `${opts.fallback}${url}`,
-        headers: omit(req.headers, ['category'])
+        headers: omit(req.headers, ['test_category'])
     };
 
     if (req.body) {
         options.body = req.body;
     }
-    return request(options)
-        .on('error', function(err) {
-            return res.sendError(404, {
-                name: 'Fallback Error',
-                message: 'fallback server is unavailable now'
-            });
-        })
-        .on('response', function(response) {
-            if (noSave(opts, req)) {
-                return;
-            }
-            const body = [];
-            response.on('data', function(chunk) {
-                body.push(chunk);
-            });
-            response.on('end', function() {
-                saveFallbackResult(url, method, req.category(), response.statusCode, options.body ? options.body.toString().trim() : null, Buffer.concat(body).toString().trim());
-            });
-        })
-        .pipe(res);
+
+    return new Promise((resolve, reject) => {
+        request(options)
+            .on('error', function(err) {
+                return res.sendError(404, {
+                    name: 'Fallback Error',
+                    message: 'fallback server is unavailable now'
+                });
+            })
+            .on('response', function(response) {
+                if (noSave(req)) {
+                    return;
+                }
+                const body = [];
+                response.on('data', function(chunk) {
+                    body.push(chunk);
+                });
+                response.on('end', function() {
+                    const responseBody = Buffer.concat(body).toString().trim();
+                    saveFallbackResult(
+                        url,
+                        method,
+                        req.category(),
+                        response.statusCode,
+                        options.body,
+                        responseBody)
+                        .then(resolve);
+                });
+            })
+            .pipe(res);
+    });
 }
 
 function getRealURL(url) {
     return url.replace(/^\/m/, '');
-}
-
-function matchAPI(a, method, req) {
-    const url = getRealURL(req.url);
-    if (a.method !== method) {
-        return false;
-    }
-    if (a.category !== req.category()) {
-        return false;
-    }
-    if (serializeRequestBody(a.body) !== serializeRequestBody(req.body)) {
-        return false;
-    }
-    if (!a.enabled) {
-        return false;
-    }
-    if (matchURL(url, a.api)) {
-        return false;
-    }
-    return true;
 }
 
 function matchURL(url, pattern) {
@@ -121,27 +125,29 @@ function matchURL(url, pattern) {
     });
 }
 
-function noSave(opts, req) {
-    if (!opts.saveFallbackResult || !req.category() || !opts.saveFallbackResult[req.category()] || req.category() === 'example') {
+function noSave(req) {
+    const opts = settingLoader.get();
+    if (!opts.saveFallbackResult || !req.category() || !opts.saveFallbackResult[req.category()]) {
         return true;
     }
 }
 
 function saveFallbackResult(url, method, category, statusCode, requestBody, responseStr) {
     const model = new Model({
-        id: uuidV1(),
         api: url,
         method: method,
         enabled: true,
-        category: category,
+        test_category: category,
         status: statusCode,
         body: requestBody,
         headers: {}, //TODO: header maybe supported later
-        response: responseStr ? JSON.parse(responseStr) : {}
+        response: responseStr || ''
     });
 
-    if (apis.getAPIs().some(d => d.id !== model.id && d.equals(model))) {
-        return;
-    }
-    apis.saveAPI(model);
+    return apiService
+        .save(model)
+        .then(emptyCallback, emptyCallback);
+}
+
+function emptyCallback() {
 }

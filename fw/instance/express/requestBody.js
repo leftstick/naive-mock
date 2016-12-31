@@ -9,13 +9,14 @@ module.exports = function(app) {
     app.use(/^\/internal-used\/.*/, jsonParser);
 
     app.use(/\/m/, function(req, res, next) {
+        req.body = '';
         const body = [];
         req.on('data', function(chunk) {
             body.push(chunk);
         });
         req.on('end', function() {
             if (body.length) {
-                req.body = Buffer.concat(body);
+                req.body = Buffer.concat(body).toString();
             }
             next();
         });

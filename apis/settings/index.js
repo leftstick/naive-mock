@@ -1,18 +1,14 @@
-const settings = require('../../fw/loader/settings');
-const apis = require('../../fw/loader/apis');
+const settingLoader = require('../../fw/db/SettingLoader');
+const categoryService = require('../../fw/db/service/CategoryService');
 const {isNull} = require('../../fw/util/Object');
 
 module.exports.api = '/internal-used/settings';
 
 module.exports.get = function*(req, res, next) {
 
-    const opts = settings.get();
+    const opts = settingLoader.get();
 
-    if (!opts.saveFallbackResult) {
-        opts.saveFallbackResult = {};
-    }
-
-    const categories = apis.getCategories();
+    const categories = yield categoryService.get();
 
     categories.forEach((c) => {
         if (isNull(opts.saveFallbackResult[c]) && c !== 'example') {
@@ -28,10 +24,10 @@ module.exports.put = function*(req, res, next) {
 
     const {fallback, saveFallbackResult} = req.body;
 
-    settings.set('fallback', fallback.replace(/\/$/, ''));
-    settings.set('saveFallbackResult', saveFallbackResult);
+    settingLoader.set('fallback', fallback.replace(/\/$/, ''));
+    settingLoader.set('saveFallbackResult', saveFallbackResult);
 
-    const result = yield settings.save();
+    const result = yield settingLoader.save();
 
     res
         .sendApi(result);

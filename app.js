@@ -1,5 +1,3 @@
-const chalk = require('chalk');
-
 const logger = require('./fw/logger');
 const expressSetup = require('./fw/instance/express');
 const apis = require('./apis');
@@ -20,8 +18,8 @@ co(function*() {
     yield app.launch();
 
 }).catch(function(err) {
+    console.log(err);
     logger.error(err.message);
-    console.log(chalk.red(err));
     setTimeout(function() {
         process.exit(-1);
     }, 2000);

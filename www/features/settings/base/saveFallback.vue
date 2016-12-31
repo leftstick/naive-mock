@@ -39,6 +39,9 @@ export default {
     .el-checkbox-group {
         max-height: 290px;
         overflow-y: auto;
+        padding: 0 5px 0 5px;
+        border: 1px solid #c0ccda;
+        border-radius: 4px;
     }
 
     .el-checkbox-group .el-checkbox {

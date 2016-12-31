@@ -1,12 +1,12 @@
 <template>
     <div class="apis">
         <div class="query">
-            <el-form ref="query" label-width="80px">
+            <el-form ref="query" label-width="110px">
                 <el-form-item label="API name" class="api">
                     <el-input :value="apisQuery.api" @change="set('api', arguments[0])"></el-input>
                 </el-form-item>
-                <el-form-item label="Category" class="category">
-                    <categories @change="set('category', arguments[0])" :pre="apisQuery.category"></categories>
+                <el-form-item label="Test Category" class="category">
+                    <categories @change="set('test_category', arguments[0])" :pre="apisQuery.test_category"></categories>
                 </el-form-item>
                  <el-form-item label="Method" class="method">
                     <methods @change="set('method', arguments[0])" :pre="apisQuery.method"></methods>
@@ -89,7 +89,11 @@ export default {
         position: relative;
 
         .el-form {
-            width: 400px;
+            width: 430px;
+        }
+
+        .api .el-input {
+            width: 300px;
         }
 
         .el-form-item:not(:last-child) {

@@ -7,7 +7,13 @@ module.exports = function(app) {
     };
 
     app.response.sendMock = function(data) {
-        this.json(data);
+        const self = this;
+        try {
+            self.json(JSON.parse(data));
+        } catch (error) {
+            self.send(data);
+        }
+        return {};
     };
 
 

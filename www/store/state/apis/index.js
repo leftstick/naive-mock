@@ -3,7 +3,7 @@ export const apis = {
     query: {
         api: '',
         method: '',
-        category: '',
+        test_category: '',
         status: ''
     },
     categories: {

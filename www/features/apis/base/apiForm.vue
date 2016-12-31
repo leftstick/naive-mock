@@ -1,23 +1,24 @@
 <template>
     <div class="api-form">
         <h1>{{ type }} API</h1>
-        <el-form ref="query" :model="api" label-width="80px">
+        <el-form ref="query" :model="api" label-width="110px">
             <el-form-item label="API name" class="api">
                 <el-input :value="api.api" @change="set('api', arguments[0])">
                     <el-button slot="append" icon="information" @click="goHelp('how-to-create-mock-api')"></el-button>
                 </el-input>
             </el-form-item>
-            <el-form-item label="Category" class="category">
-                <categories @change="set('category', arguments[0])" :pre="api.category" disable-item="example"></categories>
+            <el-form-item label="Test Category" class="category">
+                <categories @change="set('test_category', arguments[0])" :pre="api.test_category" disable-item="example"></categories>
             </el-form-item>
             <el-form-item label="Method" class="method">
                 <methods @change="set('method', arguments[0])" :pre="api.method"></methods>
             </el-form-item>
+            <el-form-item label="Request Body" class="request-body">
+                <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 6}" @change="set('body', arguments[0])" :value="api.body"></el-input>
+            </el-form-item>
+            <div class="separator"></div>
             <el-form-item label="Status" class="status">
                 <statuses @change="set('status', arguments[0])" :pre="api.status"></statuses>
-            </el-form-item>
-            <el-form-item label="Enabled" class="enabled">
-                <el-switch v-model="api.enabled" on-text="" off-text="" @change="set('enabled', arguments[0])"></el-switch>
             </el-form-item>
             <codemirror :code="api.response" :options="editorOpts" @changed="set('response', arguments[0])"></codemirror>
             <el-form-item style="margin-top: 35px;">
@@ -40,7 +41,7 @@ import methods from './methods';
 export default {
     data() {
         return {
-            api: this.type === 'Create' ? {api: '', method: 'GET', category: '', status: '200', response: '', enabled: true} : eraseGetter(this.info),
+            api: this.type === 'Create' ? {api: '', method: 'GET', test_category: '', status: '200', response: '', enabled: true} : eraseGetter(this.info),
             editorOpts: {
                 tabSize: 4,
                 indentWithTabs: true,
@@ -105,9 +106,16 @@ export default {
             margin: 20px auto 10px auto;
             text-align: left;
 
-            .api {
-                width: 400px;
+            .api .el-input,
+            .request-body .el-textarea {
+                    width: 300px;
             }
         }
+    }
+
+    .separator {
+        height: 30px;
+        border-top: 1px solid #c0ccda;
+        text-align: center;
     }
 </style>

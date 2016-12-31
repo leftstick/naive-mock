@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import {UPDATE_APIS_QUERY, UPDATE_APIS_OPERATING, UPDATE_API_LIST} from '../../mutations';
 
-import {pickNotEmpty, isString} from 'fw/util/Object';
+import {pickNotEmpty} from 'fw/util/Object';
 
 export function updateAPIsQuery({commit, state}, payload) {
     commit(UPDATE_APIS_QUERY.type, payload);
@@ -11,16 +11,16 @@ export function updateAPIsQuery({commit, state}, payload) {
 export function resetAPIsQuery({commit, state}, payload) {
     commit(UPDATE_APIS_QUERY.type, {
         api: '',
-        category: '',
+        test_category: '',
         status: ''
     });
 }
 
-export function getAPI({commit, state}, id) {
+export function getAPI({commit, state}, _id) {
     commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
-        .get(`/internal-used/api/${id}`)
+        .get(`/internal-used/api/${_id}`)
         .then(response => {
             commit(UPDATE_APIS_OPERATING.type, false);
             return response.data.data;
@@ -30,14 +30,14 @@ export function getAPI({commit, state}, id) {
         });
 }
 
-export function deleteAPI({commit, state}, id) {
+export function deleteAPI({commit, state}, _id) {
     commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
-        .delete(`/internal-used/api/${id}`)
+        .delete(`/internal-used/api/${_id}`)
         .then(response => {
             commit(UPDATE_APIS_OPERATING.type, false);
-            commit(UPDATE_API_LIST.type, state.apis.data.list.filter(a => a.id !== id));
+            commit(UPDATE_API_LIST.type, state.apis.data.list.filter(a => a._id !== _id));
             return response.data.data;
         }, err => {
             commit(UPDATE_APIS_OPERATING.type, false);
@@ -86,7 +86,7 @@ export function createAPI({commit, state}, api) {
 
 export function updateAPI({commit, state}, api) {
     try {
-        if (!api.id) {
+        if (!api._id) {
             throw new Error('id cannot be empty');
         }
         valideAPI(api);
@@ -97,10 +97,10 @@ export function updateAPI({commit, state}, api) {
     commit(UPDATE_APIS_OPERATING.type, true);
 
     return axios
-        .put(`/internal-used/api/${api.id}`, api)
+        .put(`/internal-used/api/${api._id}`, api)
         .then(response => {
             commit(UPDATE_APIS_OPERATING.type, false);
-            commit(UPDATE_API_LIST.type, state.apis.data.list.map(a => a.id !== api.id ? a : response.data.data));
+            commit(UPDATE_API_LIST.type, state.apis.data.list.map(a => a._id !== api._id ? a : response.data.data));
             return response.data.data;
         }, err => {
             commit(UPDATE_APIS_OPERATING.type, false);
@@ -116,8 +116,8 @@ function valideAPI(api) {
     if (!api.api.startsWith('/')) {
         throw new Error('api must starts with /');
     }
-    if (!api.category) {
-        throw new Error('category cannot be empty');
+    if (!api.test_category) {
+        throw new Error('test category cannot be empty');
     }
     if (!api.method) {
         throw new Error('method cannot be empty');
@@ -127,14 +127,5 @@ function valideAPI(api) {
     }
     if (!api.response) {
         throw new Error('response cannot be empty');
-    }
-    if (!isString(api.response)) {
-        return;
-    }
-    try {
-        api.response = api.response.replace(/\n/g, '').replace(/\t/g, '');
-        api.response = JSON.parse(api.response);
-    } catch (error) {
-        throw new Error('response is not a valid JSON');
     }
 }

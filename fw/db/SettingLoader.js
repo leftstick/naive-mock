@@ -7,7 +7,10 @@ const {dirExist} = require('../util/File');
 
 class SettingsLoader {
     constructor() {
-        this.data = {};
+        this.data = {
+            fallback: '',
+            saveFallbackResult: {}
+        };
     }
 
     load() {

@@ -2,7 +2,7 @@
     <div>
         <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi">
             <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
-            <el-table-column prop="category" label="Category" sortable width="150"></el-table-column>
+            <el-table-column prop="test_category" label="Test Category" sortable width="150"></el-table-column>
             <el-table-column prop="method" label="Method" sortable width="100"></el-table-column>
             <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
             <el-table-column :context="_self" inline-template label="Enabled" width="125">
@@ -10,9 +10,9 @@
             </el-table-column>
             <el-table-column :context="_self" inline-template label="Oper" width="130">
                 <div>
-                    <switcher :disabled="row.category === 'example'" :pre="row.enabled" @change="handleSwitch($index, row, arguments[0])"></switcher>
-                    <el-button size="small" type="text" icon="edit" :disabled="row.category === 'example'" @click="handleEdit($index, row)" style="margin-left: 10px;"></el-button>
-                    <el-button size="small" type="text" icon="delete" :disabled="row.category === 'example'" @click="handleDelete($index, row)"></el-button>
+                    <switcher :pre="row.enabled" @change="handleSwitch($index, row, arguments[0])"></switcher>
+                    <el-button size="small" type="text" icon="edit" @click="handleEdit($index, row)" style="margin-left: 10px;"></el-button>
+                    <el-button size="small" type="text" icon="delete" @click="handleDelete($index, row)"></el-button>
                 </div>
             </el-table-column>
         </el-table>
@@ -54,7 +54,7 @@ export default {
                 if (!row.enabled) {
                     return this.$alert('This API is not accessable since it was disabled', 'Info');
                 }
-                this.tryCmd = `curl -X ${row.method} -H "category:${row.category}" ${window.location.origin}/m${row.api}`;
+                this.tryCmd = `curl -X ${row.method} -H "test_category:${row.test_category}" ${window.location.origin}/m${row.api}`;
                 this.$refs.verify.open();
             }
         },
@@ -67,7 +67,7 @@ export default {
         },
         handleEdit(index, row) {
             this.$router.push({
-                path: `/apimanager/edit/${row.id}`
+                path: `/apimanager/edit/${row._id}`
             });
         },
         handleDelete(index, row) {
@@ -75,7 +75,7 @@ export default {
                 type: 'warning'
             })
             .then(() => {
-                return this.deleteAPI(row.id);
+                return this.deleteAPI(row._id);
             })
             .catch(this._error);
         },

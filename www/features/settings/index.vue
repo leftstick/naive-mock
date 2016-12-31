@@ -105,7 +105,4 @@ export default {
             margin-top: 50px;
         }
     }
-    .savefallback {
-        height: 300px;
-    }
 </style>
