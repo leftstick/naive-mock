@@ -26,12 +26,15 @@
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item command="create">Create API</el-dropdown-item>
+                        <el-dropdown-item :disabled="!selectedIds.length" command="delete">
+                            Delete APIs
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
         <div class="api-list" v-loading="apisListOperating">
-            <api-list></api-list>
+            <api-list @select="multiSelect"></api-list>
         </div>
     </div>
 </template>
@@ -44,6 +47,11 @@ import methods from './base/methods';
 import apiList from './base/apiList';
 
 export default {
+    data() {
+        return {
+            selectedIds: []
+        };
+    },
     computed: {
         ...mapGetters([
             'apisQuery',
@@ -54,15 +62,36 @@ export default {
         ...mapActions([
             'updateAPIsQuery',
             'resetAPIsQuery',
-            'fetchAPIs'
+            'fetchAPIs',
+            'deleteAPIs'
         ]),
         set(field, val) {
             this.updateAPIsQuery({[field]: val});
         },
+        multiSelect(ids) {
+            this.selectedIds = ids;
+        },
         takeAction(command) {
-            this.$router.push({
-                path: '/apimanager/new'
-            });
+            if (command === 'create') {
+                return this.$router.push({
+                    path: '/apimanager/new'
+                });
+            }
+            if (command === 'delete') {
+                return this
+                            .deleteAPIs(this.selectedIds)
+                            .then(() => {
+                                this.selectedIds = [];
+                                this.$message({
+                                    message: 'APIs deleted successfully',
+                                    type: 'success'
+                                });
+                            })
+                            .catch(this._error);
+            }
+        },
+        _error(err) {
+            this.$message.error(err.message);
         }
     },
     components: {

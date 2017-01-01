@@ -10,8 +10,10 @@ module.exports.get = function*(req, res, next) {
 
     const categories = yield categoryService.get();
 
+    opts.saveFallbackResult = removeNonExistCategories(categories);
+
     categories.forEach((c) => {
-        if (isNull(opts.saveFallbackResult[c]) && c !== 'example') {
+        if (isNull(opts.saveFallbackResult[c])) {
             opts.saveFallbackResult[c] = false;
         }
     });
@@ -32,3 +34,12 @@ module.exports.put = function*(req, res, next) {
     res
         .sendApi(result);
 };
+
+function removeNonExistCategories(categories) {
+    const opts = settingLoader.get();
+    const existKeys = Object.keys(opts.saveFallbackResult).filter(k => categories.includes(k));
+    return existKeys.reduce((p, c) => {
+        p[c] = opts.saveFallbackResult[c];
+        return p;
+    }, {});
+}

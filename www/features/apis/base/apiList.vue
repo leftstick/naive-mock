@@ -1,6 +1,7 @@
 <template>
     <div>
-        <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi">
+        <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi" @selection-change="multiSelect">
+            <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
             <el-table-column prop="test_category" label="Test Category" sortable width="150"></el-table-column>
             <el-table-column prop="method" label="Method" sortable width="100"></el-table-column>
@@ -57,6 +58,9 @@ export default {
                 this.tryCmd = `curl -X ${row.method} -H "test_category:${row.test_category}" ${window.location.origin}/m${row.api}`;
                 this.$refs.verify.open();
             }
+        },
+        multiSelect(vals) {
+            this.$emit('select', vals.map(v => v._id));
         },
         handleSwitch(index, row, val) {
             const info = eraseGetter(row);

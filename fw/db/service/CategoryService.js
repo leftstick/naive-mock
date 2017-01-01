@@ -17,13 +17,13 @@ class CategoryService {
                 .projection({
                     test_category: 1
                 })
-                .exec(function(err, docs) {
+                .exec((err, docs) => {
                     if (err) {
                         return reject(err);
                     }
                     const categories = docs
                         .reduce((p, c) => p.includes(c.test_category) ? p : p.concat([c.test_category]), []);
-
+                    this.categories.push(...categories);
                     resolve(categories);
                 });
         });

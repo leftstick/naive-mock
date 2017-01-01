@@ -45,6 +45,23 @@ export function deleteAPI({commit, state}, _id) {
         });
 }
 
+export function deleteAPIs({commit, state}, _ids) {
+    commit(UPDATE_APIS_OPERATING.type, true);
+
+    return axios
+        .delete('/internal-used/apis', {
+            data: _ids
+        })
+        .then(response => {
+            commit(UPDATE_APIS_OPERATING.type, false);
+            commit(UPDATE_API_LIST.type, state.apis.data.list.filter(a => !response.data.data.includes(a._id)));
+            return response.data.data;
+        }, err => {
+            commit(UPDATE_APIS_OPERATING.type, false);
+            throw err;
+        });
+}
+
 
 export function fetchAPIs({commit, state}) {
     commit(UPDATE_APIS_OPERATING.type, true);

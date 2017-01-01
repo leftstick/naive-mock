@@ -78,6 +78,12 @@ class APIService {
         });
     }
 
+    deleteByIds(ids) {
+        return Promise.all(
+            ids.map(id => this.deleteById(id))
+        );
+    }
+
     save(model) {
         return this
             .checkIfDefined(model)
