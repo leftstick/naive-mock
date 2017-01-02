@@ -1,6 +1,6 @@
 <template>
     <div class="settings" v-loading="settingsOperating">
-        <el-form ref="form" :model="info" label-width="155px" v-if="info">
+        <el-form ref="form" :model="info" label-width="160px" v-if="info">
             <el-form-item label="Fallback Domain">
                 <el-input v-model="info.fallback">
                     <el-button slot="append" icon="information" @click="goHelp('what-is-fallback')"></el-button>
@@ -8,6 +8,9 @@
             </el-form-item>
             <el-form-item label="Save Fallback Result" class="savefallback">
                 <save-fallback :pre="info.saveFallbackResult" @change="updateSaveFallback"></save-fallback>
+            </el-form-item>
+            <el-form-item label="Enable CORS support" class="cors">
+                <switcher :pre="info.cors" @change="info.cors = arguments[0]"></switcher>
             </el-form-item>
             <el-form-item class="submit">
                 <el-button type="primary" @click="onSubmit">Save</el-button>
@@ -81,6 +84,7 @@ export default {
                 this.info = {};
                 this.info.fallback = item.fallback || '';
                 this.info.saveFallbackResult = eraseGetter(item.saveFallbackResult) || {};
+                this.info.cors = !!item.cors;
             })
             .catch(this._onerror);
     },

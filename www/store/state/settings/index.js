@@ -2,7 +2,8 @@
 export const settings = {
     data: {
         fallback: '',
-        saveFallbackResult: false
+        saveFallbackResult: false,
+        cors: false
     },
     operating: false
 };

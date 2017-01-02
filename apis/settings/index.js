@@ -24,10 +24,11 @@ module.exports.get = function*(req, res, next) {
 
 module.exports.put = function*(req, res, next) {
 
-    const {fallback, saveFallbackResult} = req.body;
+    const {fallback, saveFallbackResult, cors} = req.body;
 
     settingLoader.set('fallback', fallback.replace(/\/$/, ''));
     settingLoader.set('saveFallbackResult', saveFallbackResult);
+    settingLoader.set('cors', cors);
 
     const result = yield settingLoader.save();
 

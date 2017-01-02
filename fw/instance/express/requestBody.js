@@ -8,7 +8,7 @@ module.exports = function(app) {
 
     app.use(/^\/internal-used\/.*/, jsonParser);
 
-    app.use(/\/m/, function(req, res, next) {
+    app.use(/\/m\/.*/, function(req, res, next) {
         req.body = '';
         const body = [];
         req.on('data', function(chunk) {

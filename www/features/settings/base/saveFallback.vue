@@ -37,6 +37,7 @@ export default {
 
 <style scoped>
     .el-checkbox-group {
+        min-height: 36px;
         max-height: 290px;
         overflow-y: auto;
         padding: 0 5px 0 5px;

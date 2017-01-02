@@ -37,6 +37,12 @@
                 <p>Go to <router-link :to="{ path: '/settings' }">Settings</router-link> page. You will see <code>Save Fallback Result</code> config. As below figure:</p>
                 <img src="../../img/help/settings-save-fallback-result.png">
             </div>
+            <div class="block">
+                <h2 id="what-is-cors" class="sub-title"><a href v-anchor="'what-is-cors'">What is CORS support?</a></h2>
+                <p><code>Enable CORS Support</code> is useful when you try to use <code>naive-mock</code> with your client directly. And browser has <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing" target="_blank">CORS</a> limitation. <code>CORS support</code> is required in that case.</p>
+                <p>Go to <router-link :to="{ path: '/settings' }">Settings</router-link> page. You will see <code>Enable CORS Support</code> config. As below figure:</p>
+                <img src="../../img/help/settings-cors.png">
+            </div>
         </div>
     </div>
 </template>
