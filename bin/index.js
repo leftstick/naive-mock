@@ -11,7 +11,7 @@ updateNotifier({
 program
     .version(pkg.version)
     .option('-p, --port <port>', 'Specify port number, for example: 8080', parseInt)
-    .option('-d, --dataDir <dataDir>', 'Specify where to put mock data, settings, for example: ./data')
+    .option('-d, --dataDir <dataDir>', 'Specify where to put mock data, settings.json, for example: ./data')
     .option('-l, --logDir <logDir>', 'Specify where to put error log. Useful when you have error using naive-mock, you can send error log to me. No log recorded by default')
     .parse(process.argv);
 

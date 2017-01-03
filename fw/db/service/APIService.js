@@ -1,5 +1,5 @@
 const database = require('../Database');
-const {isBoolean, isString, omit} = require('../../../fw/util/Object');
+const {isBoolean, isString, omit, isNull} = require('../../../fw/util/Object');
 const NotExistError = require('../../../fw/error/NotExistError');
 const DuplicatedError = require('../../../fw/error/DuplicatedError');
 
@@ -16,7 +16,7 @@ class APIService {
                 $regex: new RegExp(api)
             };
         }
-        if (query.test_category) {
+        if (!isNull(query.test_category)) {
             dbQuery.test_category = query.test_category;
         }
         if (query.method) {
@@ -31,11 +31,7 @@ class APIService {
             dbQuery.enabled = query.enabled === 'true';
         }
         if (query.body) {
-            dbQuery.$or = [{
-                body: ''
-            }, {
-                body: query.body
-            }];
+            dbQuery.body = query.body;
         }
         return new Promise((resolve, reject) => {
             this.db

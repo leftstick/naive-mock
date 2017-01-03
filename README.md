@@ -20,8 +20,7 @@ npm install --global naive-mock
 ## Options ##
 
 - `port` - Specify port number you want `naive-mock` run for
-- `dataDir` - Specify where to put mock data, for example: `./data`
-- `settings` - Specify a file to save settings, for example: `./settings.json`
+- `dataDir` - Specify where to put mock data, settings.json. For example: `./data`
 - `logDir` - Specify where to put error log. Useful when you have error using `naive-mock`, you can send error log to me. No log recorded by default
 - `help` - Print help menu with the list of arguments
 - `version` - Print what version it is
@@ -32,7 +31,7 @@ npm install --global naive-mock
 mock --port 8080
 ```
 
->The mock system will be launched at port `8080`. Visit it with: [http://127.0.0.1:8080](http://127.0.0.1:8080)
+>The mock system will be launched at port `8080`. Visit it with: [http://127.0.0.1:8080](http://127.0.0.1:8080). Data & settings will be stored at `${CWD}/data/`.
 
 
 ## Want play with source code? ##

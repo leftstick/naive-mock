@@ -4,7 +4,7 @@
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
             <el-table-column prop="test_category" label="Test Category" sortable width="150"></el-table-column>
-            <el-table-column prop="method" label="Method" sortable width="100"></el-table-column>
+            <el-table-column prop="method" label="Method" sortable width="120"></el-table-column>
             <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
             <el-table-column :context="_self" inline-template label="Enabled" width="125">
                 <div>{{ row.enabled ? 'Enabled' : 'Disabled' }}</div>
@@ -55,7 +55,11 @@ export default {
                 if (!row.enabled) {
                     return this.$alert('This API is not accessable since it was disabled', 'Info');
                 }
-                this.tryCmd = `curl -X ${row.method} -H "test_category:${row.test_category}" ${window.location.origin}/m${row.api}`;
+                this.tryCmd = `curl -X ${row.method} -H "test_category:${row.test_category}"`;
+                if (row.body) {
+                    this.tryCmd += ` -d ${JSON.stringify(row.body)}`;
+                }
+                this.tryCmd += ` ${window.location.origin.replace(/^http:\/\/localhost/, 'http://127.0.0.1')}/m${row.api}`;
                 this.$refs.verify.open();
             }
         },
@@ -101,5 +105,6 @@ export default {
     code {
         padding: 5px;
         background-color: #f5f5f5;
+        line-height: 30px;
     }
 </style>

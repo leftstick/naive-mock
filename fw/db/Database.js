@@ -14,7 +14,7 @@ class Database {
                 if (err) {
                     return reject(err);
                 }
-                this.db.persistence.setAutocompactionInterval(1000 * 60 * 5);
+                this.db.persistence.setAutocompactionInterval(1000 * 60 * 3);
                 reslove(this.db);
             });
         });
