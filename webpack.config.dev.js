@@ -1,8 +1,5 @@
 const {resolve} = require('path');
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
-const postcssNested = require('postcss-nested');
-const postcssVars = require('postcss-simple-vars');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -16,51 +13,52 @@ module.exports = {
         path: resolve(__dirname, 'public', 'assets'),
         filename: '[name].bundle.js'
     },
-    debug: true,
     devtool: 'source-map',
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.css$/,
-                loader: 'style!css'
+                use: ['style-loader', 'css-loader']
             },
             {
                 test: /\.vue$/,
-                loader: 'vue'
+                use: [{
+                    loader: 'vue-loader',
+                    options: {
+                        loaders: {
+                            js: 'babel-loader?{"presets":["es2015"],"plugins": ["transform-object-rest-spread"]}!eslint-loader',
+                            css: 'vue-style-loader!css-loader!postcss-loader'
+                        }
+                    }
+                }]
             },
             {
                 test: /\.js$/,
-                loader: 'babel?{"presets":["es2015"]}!eslint',
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['es2015'],
+                            plugins: ['transform-object-rest-spread']
+                        }
+                    },
+                    'eslint-loader'
+                ],
                 exclude: /node_modules/
             },
             {
                 test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)\w*/,
-                loader: 'file'
+                use: ['file-loader']
             }
         ]
     },
-    vue: {
-        loaders: {
-            js: 'babel?{"presets":["es2015"],"plugins": ["transform-object-rest-spread"]}!eslint',
-            css: 'vue-style!css!postcss'
-        }
-    },
-    postcss: function() {
-        return [
-            autoprefixer({
-                browsers: ['last 5 versions']
-            }),
-            postcssNested(),
-            postcssVars()
-        ];
-    },
     resolve: {
-        root: [
+        modules: [
+            resolve(__dirname, 'node_modules'),
             resolve(__dirname),
             resolve(__dirname, 'www')
         ],
         extensions: [
-            '',
             '.js',
             '.vue'
         ],
@@ -69,10 +67,7 @@ module.exports = {
         }
     },
     plugins: [
-        new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin(),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.optimize.CommonsChunkPlugin('common.bundle.js'),
         new HtmlWebpackPlugin({

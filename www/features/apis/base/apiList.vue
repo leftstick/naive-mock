@@ -3,7 +3,7 @@
         <el-table :data="apisList" height="650" border style="width: 100%" @cell-click="clickApi" @selection-change="multiSelect">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="api" label="API" sortable show-overflow-tooltip></el-table-column>
-            <el-table-column prop="test_category" label="Test Category" sortable width="150"></el-table-column>
+            <el-table-column prop="test_category" label="Test Category" sortable width="155"></el-table-column>
             <el-table-column prop="method" label="Method" sortable width="120"></el-table-column>
             <el-table-column prop="status" label="Status" sortable width="100"></el-table-column>
             <el-table-column :context="_self" inline-template label="Enabled" width="125">
