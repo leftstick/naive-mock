@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-select filterable clearable v-model="preSelected" placeholder="Please select a method" @change="selectMethod">
-            <el-option v-for="st of methods" :label="st" :value="st"></el-option>
+            <el-option v-for="st of methods" :key="st" :label="st" :value="st"></el-option>
         </el-select>
     </div>       
 </template>

@@ -26,7 +26,7 @@ module.exports = {
                     loader: 'vue-loader',
                     options: {
                         loaders: {
-                            js: 'babel-loader?{"presets":["es2015"],"plugins": ["transform-object-rest-spread"]}!eslint-loader',
+                            js: 'babel-loader!eslint-loader',
                             css: 'vue-style-loader!css-loader!postcss-loader'
                         }
                     }
@@ -34,20 +34,7 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: [
-                                ['es2015', {
-                                    modules: false
-                                }]
-                            ],
-                            plugins: ['transform-object-rest-spread']
-                        }
-                    },
-                    'eslint-loader'
-                ],
+                use: ['babel-loader', 'eslint-loader'],
                 exclude: /node_modules/
             },
             {
@@ -65,14 +52,10 @@ module.exports = {
         extensions: [
             '.js',
             '.vue'
-        ],
-        alias: {
-            vue$: 'vue/dist/vue.js'
-        }
+        ]
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.optimize.CommonsChunkPlugin('common.bundle.js'),
         new HtmlWebpackPlugin({
             filename: 'index.html',

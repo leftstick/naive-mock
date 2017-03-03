@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-select filterable clearable v-model="preSelected" :loading="apisStatusesOperating" placeholder="Please select a status code" @change="selectStatus">
-            <el-option v-for="st of apisStatusList" :label="st" :value="st"></el-option>
+            <el-option v-for="st of apisStatusList" :key="st" :label="st" :value="st"></el-option>
         </el-select>
         <el-button size="large" type="text" icon="document" @click="addStatus"></el-button>
     </div>       

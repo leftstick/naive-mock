@@ -1,6 +1,6 @@
 <template>
     <el-checkbox-group v-model="preSelected" @change="change">
-        <el-checkbox v-for="item of list" :label="item"></el-checkbox>
+        <el-checkbox v-for="item of list" :key="item" :label="item"></el-checkbox>
     </el-checkbox-group>
 </template>
 

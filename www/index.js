@@ -27,8 +27,8 @@ class App {
 
     createVueOpts() {
         this.vueOps = Object.assign({}, {
-            components: {
-                mock
+            render(h) {
+                return h(mock);
             },
             store: store()
         }, this.plugins);

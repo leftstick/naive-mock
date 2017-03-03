@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-select filterable clearable v-model="preSelected" :loading="apisCategoriesOperating" placeholder="Please select a category" @change="selectCategory">
-            <el-option v-for="cate of apisCategoryList" :label="cate" :value="cate" :disabled="disableItem && disableItem === cate"></el-option>
+            <el-option v-for="cate of apisCategoryList" :key="cate" :label="cate" :value="cate" :disabled="disableItem && disableItem === cate"></el-option>
         </el-select>
         <el-button size="large" type="text" icon="document" @click="addCategory"></el-button>
     </div>       
